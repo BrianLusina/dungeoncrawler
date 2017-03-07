@@ -8,10 +8,13 @@ import { notifier } from 'humane-js';
 
 export default class RogueLike extends Component {
 
-    constructor() {
-        super();
-        console.log(this.props);
-        this.state = this._select(this.props.getState);
+    constructor(props) {
+        super(props);
+        this.state = {
+            state: this.props.getState
+        };
+
+        this._select(this.props.getState);
     }
 
     componentWillMount() {

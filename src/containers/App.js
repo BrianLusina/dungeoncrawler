@@ -8,17 +8,21 @@ import configureStore from '../store/configureStore';
 const store = configureStore();
 
 class App extends Component {
+    constructor(){
+        super();
 
-  render() {
+        this.createMap = this.createMap.bind(this);
+    }
 
-      return (
-        <RogueLike
-            mapAlgo={this.createMap}
-            getState={store.getState}
-            store={store}
-        />
-    );
-  }
+    render() {
+        return (
+            <RogueLike
+                mapAlgo={this.createMap}
+                getState={store.getState}
+                store={store}
+            />
+        );
+    }
 
   // MAP GENERATOR
   // Returns a matrix of the given dimensions with the number of rooms specified
