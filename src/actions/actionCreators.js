@@ -1,4 +1,3 @@
-import {} from 'redux';
 
 export const damage = (entity, value) =>{
     store.dispatch({ type: 'DAMAGE', entityName: entity, value: value });

@@ -4,6 +4,7 @@ import * as action from '../actions/actionCreators';
 import ToggleButton from './ToggleButton';
 
 export default class RogueLike extends Component {
+
     constructor() {
         this.state = this._select(this.props.getState());
     }
@@ -14,7 +15,7 @@ export default class RogueLike extends Component {
 
     componentDidMount() {
         this._storeDataChanged();
-        this.unsubscribe = store.subscribe(this._storeDataChanged);
+        this.unsubscribe = this.this.props.store.subscribe(this._storeDataChanged);
         window.addEventListener('keydown', this._handleKeypress);
         window.addEventListener('resize', setWindowSize);
         // Setup touch controls
@@ -347,8 +348,9 @@ export default class RogueLike extends Component {
 // This is the algorithm for creating the map.
 // Must be a function that ouputs a matrix of 0 (wall) and 1 (floor) tiles
 RogueLike.propTypes = {
-        mapAlgo: React.PropTypes.func.isRequired,
-        getState: React.PropTypes.func.isRequired
+    mapAlgo: PropTypes.func.isRequired,
+    getState: PropTypes.func.isRequired,
+    store: PropTypes.obj.isRequired
 };
 
 
