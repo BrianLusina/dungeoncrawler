@@ -2,7 +2,7 @@
  * Created by lusinabrian on 06/03/17.
  */
 // REDUX Initial State
-export default initialState = {
+const initialState = {
     // entities is an map of ids to object describing the entity
     entities: {
         'player': {
@@ -27,3 +27,5 @@ export default initialState = {
     windowWidth: 500,
     darkness: true
 };
+
+export default initialState;

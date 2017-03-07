@@ -1,5 +1,7 @@
 import initialState from './initialState';
 import * as types from '../constants/game-constants';
+import _ from 'lodash';
+
 
 // REDUX Reducer
 export default function rogueLikeReducer() {

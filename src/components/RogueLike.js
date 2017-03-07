@@ -2,11 +2,16 @@ import React, {Component, PropTypes} from 'react';
 import * as constant from '../constants/game-constants';
 import * as action from '../actions/actionCreators';
 import ToggleButton from './ToggleButton';
+import Hammer from 'hammerjs';
+import { notifier } from 'humane-js';
+
 
 export default class RogueLike extends Component {
 
     constructor() {
-        this.state = this._select(this.props.getState());
+        super();
+        console.log(this.props);
+        this.state = this._select(this.props.getState);
     }
 
     componentWillMount() {
@@ -17,7 +22,7 @@ export default class RogueLike extends Component {
         this._storeDataChanged();
         this.unsubscribe = this.this.props.store.subscribe(this._storeDataChanged);
         window.addEventListener('keydown', this._handleKeypress);
-        window.addEventListener('resize', setWindowSize);
+        window.addEventListener('resize', action.setWindowSize);
         // Setup touch controls
         var touchElement = document.getElementById('root');
         var hammertime = new Hammer(touchElement);
@@ -57,15 +62,16 @@ export default class RogueLike extends Component {
         action.levelUp(
             currLevel * constant.PLAYER.attack,
             currLevel * constant.PLAYER.health,
-            (currLevel + 1) * constant.PLAYER.toNextLevel
+            (currLevel + 1) * constant.PLAYER.toNextLevel,
+            this.props.store
         );
     }
 
     _setupGame() {
-        action.resetMap(this.props.mapAlgo());
+        action.resetMap(this.props.mapAlgo(),this.props.store);
         this._fillMap();
         this._storeDataChanged();
-        action.setWindowSize();
+        action.setWindowSize(this.props.store);
     }
 
     _getEmptyCoords() {
@@ -80,7 +86,7 @@ export default class RogueLike extends Component {
         do {
             x = Math.floor(Math.random() * map.length);
             y = Math.floor(Math.random() * map[0].length);
-            if (map[x][y] === tileType.FLOOR && !occupiedSpaces[x + 'x' + y]) {
+            if (map[x][y] === constant.tileType.FLOOR && !occupiedSpaces[x + 'x' + y]) {
                 coords = { x: x, y: y };
             }
         } while (!coords);
@@ -89,12 +95,13 @@ export default class RogueLike extends Component {
 
     _fillMap() {
         // Place player
-        action.setLocation('player', this._getEmptyCoords());
+        action.setLocation('player', this._getEmptyCoords(), this.props.store);
         // Place items
         var state = this.props.getState();
         var weapon = constant.weaponTypes[state.level];
         action.addEntity(
-            weapon.entityName, 'weapon', weapon.health, weapon.attack, this._getEmptyCoords()
+            weapon.entityName, 'weapon', weapon.health, weapon.attack, this._getEmptyCoords(),
+            this.props.store
         );
 
         // Place heath and enemies
@@ -102,19 +109,21 @@ export default class RogueLike extends Component {
             HEALTH_VAL = 20,
             LEVEL_MULT = state.level + 1;
         for (var i = 0; i < NUM_THINGS; i++) {
-            action.addEntity('health' + i, 'health', HEALTH_VAL, 0, this._getEmptyCoords());
+            action.addEntity('health' + i, 'health', HEALTH_VAL, 0, this._getEmptyCoords(),
+                this.props.store);
             action.addEntity(
                 'enemy' + i, 'enemy', LEVEL_MULT * constant.ENEMY.health,
                 LEVEL_MULT * constant.ENEMY.attack,
-                this._getEmptyCoords()
+                this._getEmptyCoords(),
+                this.props.store
             );
         }
 
         // Place exit if not last level
-        if (state.level < 4) action.addEntity('exit', 'exit', 0, 0, this._getEmptyCoords());
+        if (state.level < 4) action.addEntity('exit', 'exit', 0, 0, this._getEmptyCoords(),this.props.store);
 
         // Place boss on last (fifth) level
-        if (state.level === 4) action.addBoss(125, 500, this._getEmptyCoords());
+        if (state.level === 4) action.addBoss(125, 500, this._getEmptyCoords(),this.props.store);
     }
 
     _addVector(coords, vector) {
@@ -184,12 +193,12 @@ export default class RogueLike extends Component {
         var player = state.entities.player;
         var map = state.map;
         var newCoords = this._addVector({ x: player.x, y: player.y }, vector);
-        if (newCoords.x > 0 && newCoords.y > 0 && newCoords.x < map.length && newCoords.y < map[0].length && map[newCoords.x][newCoords.y] !== tileType.WALL) {
+        if (newCoords.x > 0 && newCoords.y > 0 && newCoords.x < map.length && newCoords.y < map[0].length && map[newCoords.x][newCoords.y] !== constant.tileType.WALL) {
             // Tile is not a wall, determine if it contains an entity
             var entityName = state.occupiedSpaces[newCoords.x + 'x' + newCoords.y];
             // move and return if empty
             if (!entityName) {
-                action.move('player', vector);
+                action.move('player', vector,this.props.store);
                 return;
             }
 
@@ -197,8 +206,8 @@ export default class RogueLike extends Component {
             var entity = state.entities[entityName];
             switch (entity.entityType) {
                 case 'weapon':
-                    action.switchWeapon(entityName, entity.attack);
-                    action.move('player', vector);
+                    action.switchWeapon(entityName, entity.attack,this.props.store);
+                    action.move('player', vector,this.props.store);
                     break;
                 case 'boss':
                 case 'enemy':
@@ -212,8 +221,8 @@ export default class RogueLike extends Component {
                             this._setupGame();
                             return;
                         }
-                        action.damage(entityName, playerAttack);
-                        action.damage('player', enemyAttack);
+                        action.damage(entityName, playerAttack,this.props.store);
+                        action.damage('player', enemyAttack,this.props.store);
                     } else {
                         // Is the enemy a boss?
                         if (entityName === 'boss') {
@@ -221,20 +230,20 @@ export default class RogueLike extends Component {
                             this._setupGame();
                             return;
                         }
-                        action.gainXp((state.level + 1) * ENEMY.xp);
-                        action.removeEntity(entityName);
+                        action.gainXp((state.level + 1) * constant.ENEMY.xp,this.props.store);
+                        action.removeEntity(entityName,this.props.store);
                     }
                     break;
                 case 'health':
-                    action.heal('player', entity.health);
-                    action.removeEntity(entityName);
-                    action.move('player', vector);
+                    action.heal('player', entity.health,this.props.store);
+                    action.removeEntity(entityName,this.props.store);
+                    action.move('player', vector,this.props.store);
                     break;
                 case 'exit':
-                    action.resetBoard();
-                    action.setMap(this.props.mapAlgo());
-                    action.setLocation('player', this._getEmptyCoords());
-                    action.increaseLevel();
+                    action.resetBoard(this.props.store);
+                    action.setMap(this.props.mapAlgo(),this.props.store);
+                    action.setLocation('player', this._getEmptyCoords(),this.props.store);
+                    action.increaseLevel(this.props.store);
                     this._fillMap();
                     break;
                 default:
@@ -288,7 +297,7 @@ export default class RogueLike extends Component {
             for (var x = startX; x < endX; x++) {
                 var entity = occupiedSpaces[x + 'x' + y];
                 if (!entity) {
-                    tileClass = reverseLookup[map[x][y]];
+                    tileClass = constant.reverseLookup[map[x][y]];
                 } else {
                     tileClass = entities[entity].entityType;
                 }
@@ -350,7 +359,7 @@ export default class RogueLike extends Component {
 RogueLike.propTypes = {
     mapAlgo: PropTypes.func.isRequired,
     getState: PropTypes.func.isRequired,
-    store: PropTypes.obj.isRequired
+    store: PropTypes.object.isRequired
 };
 
 

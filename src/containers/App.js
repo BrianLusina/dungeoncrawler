@@ -1,23 +1,28 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
 import RogueLike from '../components/RogueLike';
-
+import { tileType } from '../constants/game-constants';
+import _ from 'lodash';
 import configureStore from '../store/configureStore';
 
 const store = configureStore();
 
 class App extends Component {
 
-    // getState: store.getState
   render() {
-    return (
-        <RogueLike mapAlgo={this.createMap()} getState={store.getState} store={store}/>
+
+      return (
+        <RogueLike
+            mapAlgo={this.createMap}
+            getState={store.getState}
+            store={store}
+        />
     );
   }
 
-    // MAP GENERATOR
-    // Returns a matrix of the given dimensions with the number of rooms specified
-    createMap() {
+  // MAP GENERATOR
+  // Returns a matrix of the given dimensions with the number of rooms specified
+  createMap() {
     var width = arguments.length <= 0 || arguments[0] === undefined ? 100 : arguments[0];
     var height = arguments.length <= 1 || arguments[1] === undefined ? 100 : arguments[1];
     var maxRoomSize = arguments.length <= 2 || arguments[2] === undefined ? 20 : arguments[2];
