@@ -1,25 +1,33 @@
 import React, {Component, PropTypes} from 'react';
 import * as constant from '../constants/game-constants';
 import * as action from '../actions/actionCreators';
-
+import ToggleButton from './ToggleButton';
 
 export default class RogueLike extends Component {
     constructor() {
-        this.state = {
-
-        }
+        this.state = this._select(this.props.getState());
     }
 
     componentWillMount() {
-
+        this._setupGame();
     }
 
-    componentDidMount(){
-
+    componentDidMount() {
+        this._storeDataChanged();
+        this.unsubscribe = store.subscribe(this._storeDataChanged);
+        window.addEventListener('keydown', this._handleKeypress);
+        window.addEventListener('resize', setWindowSize);
+        // Setup touch controls
+        var touchElement = document.getElementById('root');
+        var hammertime = new Hammer(touchElement);
+        hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
+        hammertime.on('swipe', this._handleSwipe);
     }
 
     componentWillUnmount() {
-
+        this.unsubscribe();
+        window.removeEventListener('keydown', this._handleKeypress);
+        window.removeEventListener('resize', action.setWindowSize);
     }
 
     _storeDataChanged() {
@@ -233,40 +241,8 @@ export default class RogueLike extends Component {
             }
         }
     }
-}
 
-// This is the algorithm for creating the map.
-// Must be a function that ouputs a matrix of 0 (wall) and 1 (floor) tiles
-RogueLike.propTypes = {
-        mapAlgo: React.PropTypes.func.isRequired,
-        getState: React.PropTypes.func.isRequired
-};
-
-    getInitialState: function getInitialState() {
-        return this._select(this.props.getState());
-    },
-    componentWillMount: function componentWillMount() {
-        this._setupGame();
-    },
-    componentDidMount: function componentDidMount() {
-        this._storeDataChanged();
-        this.unsubscribe = store.subscribe(this._storeDataChanged);
-        window.addEventListener('keydown', this._handleKeypress);
-        window.addEventListener('resize', setWindowSize);
-        // Setup touch controls
-        var touchElement = document.getElementById('root');
-        var hammertime = new Hammer(touchElement);
-        hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
-        hammertime.on('swipe', this._handleSwipe);
-    },
-    componentWillUnmount: function componentWillUnmount() {
-        this.unsubscribe();
-        window.removeEventListener('keydown', this._handleKeypress);
-        window.removeEventListener('resize', setWindowSize);
-    },
-    ,
-
-    render: function render() {
+    render(){
         var _state = this.state;
         var map = _state.map;
         var entities = _state.entities;
@@ -330,93 +306,49 @@ RogueLike.propTypes = {
             rows.push(React.createElement('div', { className: 'boardRow', key: 'row' + y }, row));
         }
 
-        return React.createElement(
-            'div',
-            { id: 'game' },
-            React.createElement(
-                'ul',
-                { id: 'ui' },
-                React.createElement(
-                    'li',
-                    { id: 'health' },
-                    React.createElement(
-                        'span',
-                        { className: 'label' },
-                        'Health:'
-                    ),
-                    ' ',
-                    player.health
-                ),
-                React.createElement(
-                    'li',
-                    { id: 'weapon' },
-                    React.createElement(
-                        'span',
-                        { className: 'label' },
-                        'Weapon:'
-                    ),
-                    ' ',
-                    player.weapon
-                ),
-                React.createElement(
-                    'li',
-                    { id: 'attack' },
-                    React.createElement(
-                        'span',
-                        { className: 'label' },
-                        'Attack:'
-                    ),
-                    ' ',
-                    player.attack
-                ),
-                React.createElement(
-                    'li',
-                    { id: 'playerLevel' },
-                    React.createElement(
-                        'span',
-                        { className: 'label' },
-                        'Level:'
-                    ),
-                    ' ',
-                    player.level
-                ),
-                React.createElement(
-                    'li',
-                    { id: 'xp' },
-                    React.createElement(
-                        'span',
-                        { className: 'label' },
-                        'Next Level:'
-                    ),
-                    ' ',
-                    player.toNextLevel,
-                    ' XP'
-                ),
-                React.createElement(
-                    'li',
-                    { id: 'level' },
-                    React.createElement(
-                        'span',
-                        { className: 'label' },
-                        'Dungeon:'
-                    ),
-                    ' ',
-                    level
-                )
-            ),
-            React.createElement(
-                'div',
-                { className: 'buttons' },
-                React.createElement(ToggleButton, {
-                    label: 'Toggle Darkness',
-                    id: 'toggleDarkness',
-                    handleClick: this._toggleDarkness })
-            ),
-            React.createElement(
-                'div',
-                { id: 'board' },
-                rows
-            )
-        );
+        return(
+            <div id="game">
+                <ul id="ui">
+                    <li id="health">
+                        <span className="label">Health</span>" "{player.health}
+                    </li>
+                    <li id="weapon">
+                        <span className="label">Weapon: </span> " " {player.weapon}
+                    </li>
+                    <li id="attack">
+                        <span className="label">Attack: </span> " " {player.attack}
+                    </li>
+                    <li id="playerLevel">
+                        <span className="label">Level: </span> " " {player.level}
+                    </li>
+                    <li id="xp">
+                        <span className="label">Next Level: </span> " " {player.toNextLevel}
+                    </li>
+                    <li>
+                        <span className="label">Dungeon: </span> " " {level}
+                    </li>
+                </ul>
+
+                <div className="buttons">
+                    <ToggleButton
+                        label="Toggle Darkness"
+                        id="toggleDarkness"
+                        handleClick={this._toggleDarkness()}
+                    />
+                </div>
+                <div id="board">
+                    {rows}
+                </div>
+            </div>
+        )
     }
-});
+}
+
+// This is the algorithm for creating the map.
+// Must be a function that ouputs a matrix of 0 (wall) and 1 (floor) tiles
+RogueLike.propTypes = {
+        mapAlgo: React.PropTypes.func.isRequired,
+        getState: React.PropTypes.func.isRequired
+};
+
+
