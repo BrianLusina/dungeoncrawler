@@ -1,19 +1,20 @@
-var ToggleButton = React.createClass({
-    displayName: 'ToggleButton',
+import React, { Component, PropTypes } from 'react';
 
-    propTypes: {
-        label: React.PropTypes.string.isRequired,
-        id: React.PropTypes.string.isRequired,
-        handleClick: React.PropTypes.func.isRequired
-    },
-    render: function render() {
-        return React.createElement(
-            'button',
-            {
-                className: 'toggleButton',
-                id: this.props.id,
-                onClick: this.props.handleClick },
-            this.props.label
-        );
+/**
+ * Toggle button component*/
+export default class ToggleButton extends Component{
+
+    render(){
+        return(
+            <button id={this.props.id} className="toggleButton" onClick={this.props.handleClick}>
+                {this.props.label}
+            </button>
+        )
     }
-});
+}
+
+ToggleButton.propTypes = {
+    label: React.PropTypes.string.isRequired,
+    id: React.PropTypes.string.isRequired,
+    handleClick: React.PropTypes.func.isRequired
+};
