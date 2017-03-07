@@ -1,45 +1,36 @@
 import React, {Component, PropTypes} from 'react';
+import * as constant from '../constants/game-constants';
+import * as action from '../actions/actionCreators';
 
 
-// REACT UI
-var RogueLike = React.createClass({
-    displayName: 'RogueLike',
+export default class RogueLike extends Component {
+    constructor() {
+        this.state = {
 
-    propTypes: {
-        // This is the algorithm for creating the map.
-        // Must be a function that ouputs a matrix of 0 (wall) and 1 (floor) tiles
-        mapAlgo: React.PropTypes.func.isRequired,
-        getState: React.PropTypes.func.isRequired
-    },
-    getInitialState: function getInitialState() {
-        return this._select(this.props.getState());
-    },
-    componentWillMount: function componentWillMount() {
-        this._setupGame();
-    },
-    componentDidMount: function componentDidMount() {
-        this._storeDataChanged();
-        this.unsubscribe = store.subscribe(this._storeDataChanged);
-        window.addEventListener('keydown', this._handleKeypress);
-        window.addEventListener('resize', setWindowSize);
-        // Setup touch controls
-        var touchElement = document.getElementById('root');
-        var hammertime = new Hammer(touchElement);
-        hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
-        hammertime.on('swipe', this._handleSwipe);
-    },
-    componentWillUnmount: function componentWillUnmount() {
-        this.unsubscribe();
-        window.removeEventListener('keydown', this._handleKeypress);
-        window.removeEventListener('resize', setWindowSize);
-    },
-    _storeDataChanged: function _storeDataChanged() {
-        var newState = this.props.getState();
+        }
+    }
+
+    componentWillMount() {
+
+    }
+
+    componentDidMount(){
+
+    }
+
+    componentWillUnmount() {
+
+    }
+
+    _storeDataChanged() {
+        let newState = this.props.getState();
         // Should player level up?
-        if (newState.entities.player.toNextLevel <= 0) this._playerLeveledUp();
+        if (newState.entities.player.toNextLevel <= 0)
+            this._playerLeveledUp();
         this.setState(this._select(newState));
-    },
-    _select: function _select(state) {
+    }
+
+    _select(state){
         return {
             player: state.entities.player,
             entities: state.entities,
@@ -50,19 +41,26 @@ var RogueLike = React.createClass({
             windowWidth: state.windowWidth,
             darkness: state.darkness
         };
-    },
-    _playerLeveledUp: function _playerLeveledUp() {
+    }
+
+    _playerLeveledUp() {
         var currLevel = this.state.player.level + 1;
-        levelUp(currLevel * PLAYER.attack, currLevel * PLAYER.health, (currLevel + 1) * PLAYER.toNextLevel);
-    },
-    _setupGame: function _setupGame() {
-        resetMap(this.props.mapAlgo());
+        action.levelUp(
+            currLevel * constant.PLAYER.attack,
+            currLevel * constant.PLAYER.health,
+            (currLevel + 1) * constant.PLAYER.toNextLevel
+        );
+    }
+
+    _setupGame() {
+        action.resetMap(this.props.mapAlgo());
         this._fillMap();
         this._storeDataChanged();
-        setWindowSize();
-    },
-    _getEmptyCoords: function _getEmptyCoords() {
-        var _props$getState = this.props.getState();
+        action.setWindowSize();
+    }
+
+    _getEmptyCoords() {
+        let _props$getState = this.props.getState();
 
         var map = _props$getState.map;
         var occupiedSpaces = _props$getState.occupiedSpaces;
@@ -78,34 +76,47 @@ var RogueLike = React.createClass({
             }
         } while (!coords);
         return coords;
-    },
-    _fillMap: function _fillMap() {
+    }
+
+    _fillMap() {
         // Place player
-        setLocation('player', this._getEmptyCoords());
+        action.setLocation('player', this._getEmptyCoords());
         // Place items
         var state = this.props.getState();
-        var weapon = weaponTypes[state.level];
-        addEntity(weapon.entityName, 'weapon', weapon.health, weapon.attack, this._getEmptyCoords());
+        var weapon = constant.weaponTypes[state.level];
+        action.addEntity(
+            weapon.entityName, 'weapon', weapon.health, weapon.attack, this._getEmptyCoords()
+        );
+
         // Place heath and enemies
         var NUM_THINGS = 5,
             HEALTH_VAL = 20,
             LEVEL_MULT = state.level + 1;
         for (var i = 0; i < NUM_THINGS; i++) {
-            addEntity('health' + i, 'health', HEALTH_VAL, 0, this._getEmptyCoords());
-            addEntity('enemy' + i, 'enemy', LEVEL_MULT * ENEMY.health, LEVEL_MULT * ENEMY.attack, this._getEmptyCoords());
+            action.addEntity('health' + i, 'health', HEALTH_VAL, 0, this._getEmptyCoords());
+            action.addEntity(
+                'enemy' + i, 'enemy', LEVEL_MULT * constant.ENEMY.health,
+                LEVEL_MULT * constant.ENEMY.attack,
+                this._getEmptyCoords()
+            );
         }
+
         // Place exit if not last level
-        if (state.level < 4) addEntity('exit', 'exit', 0, 0, this._getEmptyCoords());
+        if (state.level < 4) action.addEntity('exit', 'exit', 0, 0, this._getEmptyCoords());
+
         // Place boss on last (fifth) level
-        if (state.level === 4) addBoss(125, 500, this._getEmptyCoords());
-    },
-    _addVector: function _addVector(coords, vector) {
+        if (state.level === 4) action.addBoss(125, 500, this._getEmptyCoords());
+    }
+
+    _addVector(coords, vector) {
         return { x: coords.x + vector.x, y: coords.y + vector.y };
-    },
-    _toggleDarkness: function _toggleDarkness() {
-        toggleDarkness();
-    },
-    _handleKeypress: function _handleKeypress(e) {
+    }
+
+    _toggleDarkness() {
+        action.toggleDarkness();
+    }
+
+    _handleKeypress(e) {
         var vector = '';
         switch (e.keyCode) {
             case 37:
@@ -128,8 +139,9 @@ var RogueLike = React.createClass({
             e.preventDefault();
             this._handleMove(vector);
         }
-    },
-    _handleSwipe: function _handleSwipe(e) {
+    }
+
+    _handleSwipe(e) {
         var vector = undefined;
         var overallVelocity = e.overallVelocity;
         var angle = e.angle;
@@ -156,8 +168,9 @@ var RogueLike = React.createClass({
             e.preventDefault();
             this._handleMove(vector);
         }
-    },
-    _handleMove: function _handleMove(vector) {
+    }
+
+    _handleMove(vector) {
         var state = this.props.getState();
         var player = state.entities.player;
         var map = state.map;
@@ -167,20 +180,21 @@ var RogueLike = React.createClass({
             var entityName = state.occupiedSpaces[newCoords.x + 'x' + newCoords.y];
             // move and return if empty
             if (!entityName) {
-                move('player', vector);
+                action.move('player', vector);
                 return;
             }
+
             // handle encounters with entities
             var entity = state.entities[entityName];
             switch (entity.entityType) {
                 case 'weapon':
-                    switchWeapon(entityName, entity.attack);
-                    move('player', vector);
+                    action.switchWeapon(entityName, entity.attack);
+                    action.move('player', vector);
                     break;
                 case 'boss':
                 case 'enemy':
-                    var playerAttack = Math.floor(Math.random() * ATTACK_VARIANCE + player.attack - ATTACK_VARIANCE);
-                    var enemyAttack = Math.floor(Math.random() * ATTACK_VARIANCE + entity.attack - ATTACK_VARIANCE);
+                    var playerAttack = Math.floor(Math.random() * constant.ATTACK_VARIANCE + player.attack - constant.ATTACK_VARIANCE);
+                    var enemyAttack = Math.floor(Math.random() * constant.ATTACK_VARIANCE + entity.attack - constant.ATTACK_VARIANCE);
                     // Will hit kill enemy?
                     if (entity.health > playerAttack) {
                         // Will rebound hit kill player?
@@ -189,8 +203,8 @@ var RogueLike = React.createClass({
                             this._setupGame();
                             return;
                         }
-                        damage(entityName, playerAttack);
-                        damage('player', enemyAttack);
+                        action.damage(entityName, playerAttack);
+                        action.damage('player', enemyAttack);
                     } else {
                         // Is the enemy a boss?
                         if (entityName === 'boss') {
@@ -198,27 +212,59 @@ var RogueLike = React.createClass({
                             this._setupGame();
                             return;
                         }
-                        gainXp((state.level + 1) * ENEMY.xp);
-                        removeEntity(entityName);
+                        action.gainXp((state.level + 1) * ENEMY.xp);
+                        action.removeEntity(entityName);
                     }
                     break;
                 case 'health':
-                    heal('player', entity.health);
-                    removeEntity(entityName);
-                    move('player', vector);
+                    action.heal('player', entity.health);
+                    action.removeEntity(entityName);
+                    action.move('player', vector);
                     break;
                 case 'exit':
-                    resetBoard();
-                    setMap(this.props.mapAlgo());
-                    setLocation('player', this._getEmptyCoords());
-                    increaseLevel();
+                    action.resetBoard();
+                    action.setMap(this.props.mapAlgo());
+                    action.setLocation('player', this._getEmptyCoords());
+                    action.increaseLevel();
                     this._fillMap();
                     break;
                 default:
                     break;
             }
         }
+    }
+}
+
+// This is the algorithm for creating the map.
+// Must be a function that ouputs a matrix of 0 (wall) and 1 (floor) tiles
+RogueLike.propTypes = {
+        mapAlgo: React.PropTypes.func.isRequired,
+        getState: React.PropTypes.func.isRequired
+};
+
+    getInitialState: function getInitialState() {
+        return this._select(this.props.getState());
     },
+    componentWillMount: function componentWillMount() {
+        this._setupGame();
+    },
+    componentDidMount: function componentDidMount() {
+        this._storeDataChanged();
+        this.unsubscribe = store.subscribe(this._storeDataChanged);
+        window.addEventListener('keydown', this._handleKeypress);
+        window.addEventListener('resize', setWindowSize);
+        // Setup touch controls
+        var touchElement = document.getElementById('root');
+        var hammertime = new Hammer(touchElement);
+        hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
+        hammertime.on('swipe', this._handleSwipe);
+    },
+    componentWillUnmount: function componentWillUnmount() {
+        this.unsubscribe();
+        window.removeEventListener('keydown', this._handleKeypress);
+        window.removeEventListener('resize', setWindowSize);
+    },
+    ,
 
     render: function render() {
         var _state = this.state;
