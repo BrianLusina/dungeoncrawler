@@ -2,13 +2,12 @@ import initialState from './initialState';
 import * as types from '../constants/game-constants';
 import _ from 'lodash';
 
-
 // REDUX Reducer
 export default function rogueLikeReducer() {
-    var _extends2, _extends3, _extends4, _extends5, _extends6, _extends7, _occupiedSpaces, _extends8;
+    let _extends2, _extends3, _extends4, _extends5, _extends6, _extends7, _occupiedSpaces, _extends8;
 
-    var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
-    var action = arguments[1];
+    let state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
+    let action = arguments[1];
 
     switch (action.type) {
         case 'DAMAGE':
@@ -24,6 +23,7 @@ export default function rogueLikeReducer() {
                     health: state.entities.player.health + action.value
                 }), _extends3))
             });
+
         case 'SWITCH_WEAPON':
             return types._extends({}, state, {
                 entities: types._extends({}, state.entities, {
@@ -33,6 +33,7 @@ export default function rogueLikeReducer() {
                     })
                 })
             });
+
         case 'MOVE':
             return types._extends({}, state, {
                 occupiedSpaces: _.chain(state.occupiedSpaces).omit(state.entities[action.entityName].x + 'x' + state.entities[action.entityName].y).set(state.entities[action.entityName].x + action.vector.x + 'x' + (state.entities[action.entityName].y + action.vector.y), action.entityName).value(),

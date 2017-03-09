@@ -14,6 +14,7 @@ export default class RogueLike extends Component {
             state: this.props.getState
         };
 
+        this._select = this._select.bind(this);
         this._select(this.props.getState);
     }
 
@@ -23,7 +24,7 @@ export default class RogueLike extends Component {
 
     componentDidMount() {
         this._storeDataChanged();
-        this.unsubscribe = this.this.props.store.subscribe(this._storeDataChanged);
+        this.unsubscribe = this.props.store.subscribe(this._storeDataChanged);
         window.addEventListener('keydown', this._handleKeypress);
         window.addEventListener('resize', action.setWindowSize);
         // Setup touch controls

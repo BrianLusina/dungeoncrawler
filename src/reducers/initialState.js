@@ -1,8 +1,5 @@
-/**
- * Created by lusinabrian on 06/03/17.
- */
 // REDUX Initial State
-const initialState = {
+export default {
     // entities is an map of ids to object describing the entity
     entities: {
         'player': {
@@ -27,5 +24,3 @@ const initialState = {
     windowWidth: 500,
     darkness: true
 };
-
-export default initialState;
