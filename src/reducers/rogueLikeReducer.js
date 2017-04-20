@@ -2,20 +2,27 @@ import initialState from './initialState';
 import * as types from '../constants/game-constants';
 import _ from 'lodash';
 
-// REDUX Reducer
-export default function rogueLikeReducer() {
+/**
+ * Pure reducer function that will handle the changes in the state of the application
+ * The state tree of the application will be reduced using actions that will be dispatched
+ * to the store and return the next state of the application
+ *
+ * @param{object} state the current state of the  application
+ * @param{object} action the action to dispatch to the store
+ * @return{object} next state of the application
+ * */
+export default function rogueLikeReducer(state = initialState, action) {
     let _extends2, _extends3, _extends4, _extends5, _extends6, _extends7, _occupiedSpaces, _extends8;
-
-    let state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
-    let action = arguments[1];
 
     switch (action.type) {
         case 'DAMAGE':
             return types._extends({}, state, {
-                entities: types._extends({}, state.entities, (_extends2 = {}, _extends2[action.entityName] = types._extends({}, state.entities[action.entityName], {
-                    health: state.entities[action.entityName].health - action.value
-                }), 
-                    _extends2))
+                entities: types._extends({},
+                    state.entities,
+                    (_extends2 = {}, _extends2[action.entityName] = types._extends({}, state.entities[action.entityName], {
+                        health: state.entities[action.entityName].health - action.value
+                    }), _extends2)
+                )
             });
         case 'HEAL':
             return types._extends({}, state, {
@@ -133,5 +140,4 @@ export default function rogueLikeReducer() {
         default:
             return state;
     }
-    return state;
 }

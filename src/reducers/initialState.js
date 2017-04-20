@@ -1,6 +1,6 @@
 // REDUX Initial State
 export default {
-    // entities is an map of ids to object describing the entity
+    // entities is a map of ids to object describing the entity
     entities: {
         'player': {
             entityType: 'player',

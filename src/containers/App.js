@@ -4,6 +4,7 @@ import RogueLike from '../components/RogueLike';
 import { tileType } from '../constants/game-constants';
 import _ from 'lodash';
 import configureStore from '../store/configureStore';
+import { Provider } from 'react-redux'
 
 const store = configureStore();
 
@@ -16,11 +17,13 @@ class App extends Component {
 
     render() {
         return (
-            <RogueLike
+            <Provider store={store}>
+                <RogueLike
                 mapAlgo={this.createMap}
                 getState={store.getState}
                 store={store}
-            />
+                />
+            </Provider>
         );
     }
 
