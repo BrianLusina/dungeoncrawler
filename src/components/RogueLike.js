@@ -5,17 +5,17 @@ import ToggleButton from './ToggleButton';
 import Hammer from 'hammerjs';
 import { notifier } from 'humane-js';
 
-
+/**
+ * Component that will be used to */
 export default class RogueLike extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            state: this.props.getState
+            storeState: this.props.storeState
         };
 
         this._select = this._select.bind(this);
-        this._select(this.props.getState);
     }
 
     componentWillMount() {
@@ -41,28 +41,28 @@ export default class RogueLike extends Component {
     }
 
     _storeDataChanged() {
-        let newState = this.props.getState();
+        let newState = this.props.storeState();
         // Should player level up?
         if (newState.entities.player.toNextLevel <= 0)
             this._playerLeveledUp();
         this.setState(this._select(newState));
     }
 
-    _select(state){
+    _select(){
         return {
-            player: state.entities.player,
-            entities: state.entities,
-            map: state.map,
-            occupiedSpaces: state.occupiedSpaces,
-            level: state.level,
-            windowHeight: state.windowHeight,
-            windowWidth: state.windowWidth,
-            darkness: state.darkness
+            player: this.state.storeState.entities.player,
+            entities: this.state.storeState.entities,
+            map: this.state.storeState.map,
+            occupiedSpaces: this.state.storeState.occupiedSpaces,
+            level: this.state.storeState.level,
+            windowHeight: this.state.storeState.windowHeight,
+            windowWidth: this.state.storeState.windowWidth,
+            darkness: this.state.storeState.darkness
         };
     }
 
     _playerLeveledUp() {
-        var currLevel = this.state.player.level + 1;
+        let currLevel = this.state.storeState.player.level + 1;
         action.levelUp(
             currLevel * constant.PLAYER.attack,
             currLevel * constant.PLAYER.health,
@@ -79,7 +79,7 @@ export default class RogueLike extends Component {
     }
 
     _getEmptyCoords() {
-        let _props$getState = this.props.getState();
+        let _props$getState = this.props.storeState();
 
         var map = _props$getState.map;
         var occupiedSpaces = _props$getState.occupiedSpaces;
@@ -101,7 +101,7 @@ export default class RogueLike extends Component {
         // Place player
         action.setLocation('player', this._getEmptyCoords(), this.props.store);
         // Place items
-        var state = this.props.getState();
+        var state = this.props.storeState();
         var weapon = constant.weaponTypes[state.level];
         action.addEntity(
             weapon.entityName, 'weapon', weapon.health, weapon.attack, this._getEmptyCoords(),
@@ -193,7 +193,7 @@ export default class RogueLike extends Component {
     }
 
     _handleMove(vector) {
-        var state = this.props.getState();
+        var state = this.state.storeState;
         var player = state.entities.player;
         var map = state.map;
         var newCoords = this._addVector({ x: player.x, y: player.y }, vector);
@@ -362,7 +362,7 @@ export default class RogueLike extends Component {
 // Must be a function that ouputs a matrix of 0 (wall) and 1 (floor) tiles
 RogueLike.propTypes = {
     mapAlgo: PropTypes.func.isRequired,
-    getState: PropTypes.func.isRequired,
+    storeState: PropTypes.func.isRequired,
     store: PropTypes.object.isRequired
 };
 

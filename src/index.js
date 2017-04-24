@@ -3,8 +3,7 @@ import { render } from 'react-dom';
 import App from './containers/App';
 import './styles/index.css';
 
-
-// Render React to page
+// Entry point of the application. This will render the application to the DOM.
 render(
     <App />,
     document.getElementById('root')

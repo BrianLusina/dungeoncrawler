@@ -8,6 +8,10 @@ import { Provider } from 'react-redux'
 
 const store = configureStore();
 
+/**
+ * Single container for the application. This will be used to contain the whole application.
+ * Every component will be a child to this container
+ * */
 class App extends Component {
     constructor(){
         super();
@@ -19,9 +23,9 @@ class App extends Component {
         return (
             <Provider store={store}>
                 <RogueLike
-                mapAlgo={this.createMap}
-                getState={store.getState}
-                store={store}
+                    mapAlgo={this.createMap}
+                    storeState={store.getState}
+                    store={store}
                 />
             </Provider>
         );
