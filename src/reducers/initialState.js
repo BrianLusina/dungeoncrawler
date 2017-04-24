@@ -18,7 +18,7 @@ export default {
     occupiedSpaces: {
         '0x0': 'player'
     },
-    map: [],
+    gameMap: [],
     level: 0,
     windowHeight: 500,
     windowWidth: 500,

@@ -25,8 +25,7 @@ class App extends Component {
                 <RogueLike
                     mapAlgo={this.createMap}
                     storeState={store.getState}
-                    store={store}
-                />
+                    store={store}/>
             </Provider>
         );
     }

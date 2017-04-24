@@ -3,7 +3,7 @@ import * as constant from '../constants/game-constants';
 import * as action from '../actions/actionCreators';
 import ToggleButton from './ToggleButton';
 import Hammer from 'hammerjs';
-import { notifier } from 'humane-js';
+import notifier  from 'humane-js';
 
 /**
  * Component that will be used to */
@@ -40,6 +40,13 @@ export default class RogueLike extends Component {
         window.removeEventListener('resize', action.setWindowSize);
     }
 
+    _setupGame() {
+        action.resetMap(this.props.mapAlgo());
+        this._fillMap();
+        this._storeDataChanged();
+        action.setWindowSize(this.state.storeState);
+    }
+
     _storeDataChanged() {
         let newState = this.props.storeState();
         // Should player level up?
@@ -52,7 +59,7 @@ export default class RogueLike extends Component {
         return {
             player: this.state.storeState.entities.player,
             entities: this.state.storeState.entities,
-            map: this.state.storeState.map,
+            map: this.state.storeState.gameMap,
             occupiedSpaces: this.state.storeState.occupiedSpaces,
             level: this.state.storeState.level,
             windowHeight: this.state.storeState.windowHeight,
@@ -71,22 +78,12 @@ export default class RogueLike extends Component {
         );
     }
 
-    _setupGame() {
-        action.resetMap(this.props.mapAlgo(),this.props.store);
-        this._fillMap();
-        this._storeDataChanged();
-        action.setWindowSize(this.props.store);
-    }
-
     _getEmptyCoords() {
-        let _props$getState = this.props.storeState();
+        let map = this._select.map;
 
-        var map = _props$getState.map;
-        var occupiedSpaces = _props$getState.occupiedSpaces;
+        let occupiedSpaces = this._select.occupiedSpaces;
 
-        var coords = undefined,
-            x = undefined,
-            y = undefined;
+        let coords = undefined, x = undefined, y = undefined;
         do {
             x = Math.floor(Math.random() * map.length);
             y = Math.floor(Math.random() * map[0].length);

@@ -82,7 +82,7 @@ export default function rogueLikeReducer(state = initialState, action) {
             });
         case 'SET_MAP':
             return types._extends({}, state, {
-                map: action.map
+                gameMap: action.map
             });
         case 'INCREASE_LEVEL':
             return types._extends({}, state, {
@@ -118,7 +118,7 @@ export default function rogueLikeReducer(state = initialState, action) {
             });
         case 'RESET_MAP':
             return types._extends({}, initialState, {
-                map: action.map
+                gameMap: action.map
             });
         case 'ADD_BOSS':
             return types._extends({}, state, {
