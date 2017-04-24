@@ -1,75 +1,84 @@
+/**
+ * Action creators that will be used to dispatch actions to the store
+ * */
+import * as types from '../constants/actionTypes';
 
-export const damage = (entity, value, store) =>{
-    store.dispatch({ type: 'DAMAGE', entityName: entity, value: value });
-};
-export const heal = (entity, health, store) => {
-    store.dispatch({ type: 'HEAL', entityName: entity, value: health });
-};
 
-export const move = (entity, vector, store) => {
-    store.dispatch({ type: 'MOVE', entityName: entity, vector: vector });
-};
+export const damage = (entity, value) =>({
+   type: types.DAMAGE,
+    entity, value
+});
 
-export const setLocation = (entity, location, store) => {
-    store.dispatch({ type: 'SET_LOCATION', entityName: entity, location: location });
-};
+export const heal = (entity, health) => ({
+    type: types.HEAL,
+    entity, 
+    health
+});
 
-export const switchWeapon = (weaponName, attack, store) => {
-    store.dispatch({ type: 'SWITCH_WEAPON', weapon: weaponName, attack: attack });
-};
+export const move = (entity, vector) => ({
+    type: types.MOVE, 
+    entity, 
+    vector: vector 
+});
 
-export const addEntity = (entityName, entityType, health, attack, location, store) => {
-    store.dispatch({ type: 'ADD_ENTITY', entityName: entityName, entityType: entityType,
-        health: health, attack: attack, location: location });
-};
+export const setLocation = (entity, location) => ({
+    type: types.SET_LOCATION, entityName: entity, location: location
+});
 
-export const removeEntity = (entityName, store) => {
-    store.dispatch({ type: 'REMOVE_ENTITY', entityName: entityName });
-};
+export const switchWeapon = (weaponName, attack) => ({
+    type: types.SWITCH_WEAPON, weapon: weaponName, attack: attack
+});
 
-export const resetBoard = (store) => {
-    store.dispatch({ type: 'RESET_BOARD' });
-};
+export const addEntity = (entityName, entityType, health, attack, location) => ({
+    type: types.ADD_ENTITY, entityName: entityName, entityType: entityType,
+        health: health, attack: attack, location: location
+});
 
-export const setMap = (map, store) => {
-    store.dispatch({ type: 'SET_MAP', map: map });
-};
+export const removeEntity = (entityName) => ({
+    type: types.REMOVE_ENTITY, entityName: entityName
+});
 
-export const increaseLevel = (store) => {
-    store.dispatch({ type: 'INCREASE_LEVEL' });
-};
+export const resetBoard = () => ({
+    type: types.RESET_BOARD
+});
 
-export const resetLevel = (store) => {
-    store.dispatch({ type: 'RESET_LEVEL' });
-};
+export const setMap = (map) => ({
+    type: types.SET_MAP, map: map
+});
 
-export const setWindowSize = (store) => {
-    store.dispatch({ type: 'SET_WINDOW_SIZE',
+export const increaseLevel = () => ({
+    type: types.INCREASE_LEVEL
+});
+
+export const resetLevel = () => ({
+    type: types.RESET_LEVEL
+});
+
+export const setWindowSize = () => ({
+    type: types.SET_WINDOW_SIZE,
         windowWidth: window.innerWidth,
         windowHeight: window.innerHeight
-    });
-};
+});
 
-export const gainXp = (xp, store) => {
-    store.dispatch({ type: 'GAIN_XP', xp: xp });
-};
+export const gainXp = (xp) => ({
+    type: types.GAIN_XP, xp: xp
+});
 
-export const levelUp = (attack, health, xp, store) => {
-    store.dispatch({ type: 'LEVEL_UP',
-        attack: attack,
+export const levelUp = (attack, health, xp) => ({
+    type: types.LEVEL_UP, attack: attack,
         health: health,
         toNextLevel: xp
-    });
-};
+});
 
-export const resetMap = (map, store) => {
-    store.dispatch({ type: 'RESET_MAP', map: map });
-};
 
-export const addBoss = (attack, health, coords, store) => {
-    store.dispatch({ type: 'ADD_BOSS', attack: attack, health: health, location: coords });
-};
+export const resetMap = (gameMap) => ({
+    type: types.RESET_MAP, gameMap
+});
 
-export const toggleDarkness = (store) => {
-    store.dispatch({ type: 'TOGGLE_DARKNESS' });
-};
+export const addBoss = (attack, health, coords) => ({
+    type: types.ADD_BOSS, attack: attack, health: health, location: coords
+});
+
+export const toggleDarkness = () => ({
+    type: types.TOGGLE_DARKNESS
+});

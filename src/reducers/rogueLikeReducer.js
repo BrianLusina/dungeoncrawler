@@ -1,5 +1,5 @@
 import initialState from './initialState';
-import * as types from '../constants/game-constants';
+import * as types from '../constants/gameConstants';
 import _ from 'lodash';
 
 /**

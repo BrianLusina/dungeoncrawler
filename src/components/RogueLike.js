@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import * as constant from '../constants/game-constants';
+import * as constant from '../constants/gameConstants';
 import * as action from '../actions/actionCreators';
 import ToggleButton from './ToggleButton';
 import Hammer from 'hammerjs';

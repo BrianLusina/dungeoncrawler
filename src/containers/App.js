@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
 import RogueLike from '../components/RogueLike';
-import { tileType } from '../constants/game-constants';
+import { tileType } from '../constants/gameConstants';
 import _ from 'lodash';
 import configureStore from '../store/configureStore';
 import { Provider } from 'react-redux'
