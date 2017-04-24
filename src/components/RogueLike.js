@@ -12,7 +12,7 @@ export default class RogueLike extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            storeState: this.props.storeState
+            appStore: this.props.appStore
         };
 
         this._select = this._select.bind(this);
@@ -44,11 +44,11 @@ export default class RogueLike extends Component {
         action.resetMap(this.props.mapAlgo());
         this._fillMap();
         this._storeDataChanged();
-        action.setWindowSize(this.state.storeState);
+        action.setWindowSize(this.state.appStore.getState());
     }
 
     _storeDataChanged() {
-        let newState = this.props.storeState();
+        let newState = this.props.appStore.getState()();
         // Should player level up?
         if (newState.entities.player.toNextLevel <= 0)
             this._playerLeveledUp();
@@ -57,24 +57,23 @@ export default class RogueLike extends Component {
 
     _select(){
         return {
-            player: this.state.storeState.entities.player,
-            entities: this.state.storeState.entities,
-            map: this.state.storeState.gameMap,
-            occupiedSpaces: this.state.storeState.occupiedSpaces,
-            level: this.state.storeState.level,
-            windowHeight: this.state.storeState.windowHeight,
-            windowWidth: this.state.storeState.windowWidth,
-            darkness: this.state.storeState.darkness
+            player: this.state.appStore.getState().entities.player,
+            entities: this.state.appStore.getState().entities,
+            map: this.state.appStore.getState().gameMap,
+            occupiedSpaces: this.state.appStore.getState().occupiedSpaces,
+            level: this.state.appStore.getState().level,
+            windowHeight: this.state.appStore.getState().windowHeight,
+            windowWidth: this.state.appStore.getState().windowWidth,
+            darkness: this.state.appStore.getState().darkness
         };
     }
 
     _playerLeveledUp() {
-        let currLevel = this.state.storeState.player.level + 1;
+        let currLevel = this.state.appStore.getState().player.level + 1;
         action.levelUp(
             currLevel * constant.PLAYER.attack,
             currLevel * constant.PLAYER.health,
-            (currLevel + 1) * constant.PLAYER.toNextLevel,
-            this.props.store
+            (currLevel + 1) * constant.PLAYER.toNextLevel
         );
     }
 
@@ -96,35 +95,30 @@ export default class RogueLike extends Component {
 
     _fillMap() {
         // Place player
-        action.setLocation('player', this._getEmptyCoords(), this.props.store);
+        action.setLocation('player', this._getEmptyCoords());
         // Place items
-        var state = this.props.storeState();
+        var state = this.props.appStore.getState()();
         var weapon = constant.weaponTypes[state.level];
         action.addEntity(
-            weapon.entityName, 'weapon', weapon.health, weapon.attack, this._getEmptyCoords(),
-            this.props.store
-        );
+            weapon.entityName, 'weapon', weapon.health, weapon.attack, this._getEmptyCoords());
 
         // Place heath and enemies
         var NUM_THINGS = 5,
             HEALTH_VAL = 20,
             LEVEL_MULT = state.level + 1;
         for (var i = 0; i < NUM_THINGS; i++) {
-            action.addEntity('health' + i, 'health', HEALTH_VAL, 0, this._getEmptyCoords(),
-                this.props.store);
+            action.addEntity('health' + i, 'health', HEALTH_VAL, 0, this._getEmptyCoords());
             action.addEntity(
                 'enemy' + i, 'enemy', LEVEL_MULT * constant.ENEMY.health,
                 LEVEL_MULT * constant.ENEMY.attack,
-                this._getEmptyCoords(),
-                this.props.store
-            );
+                this._getEmptyCoords());
         }
 
         // Place exit if not last level
-        if (state.level < 4) action.addEntity('exit', 'exit', 0, 0, this._getEmptyCoords(),this.props.store);
+        if (state.level < 4) action.addEntity('exit', 'exit', 0, 0, this._getEmptyCoords());
 
         // Place boss on last (fifth) level
-        if (state.level === 4) action.addBoss(125, 500, this._getEmptyCoords(),this.props.store);
+        if (state.level === 4) action.addBoss(125, 500, this._getEmptyCoords());
     }
 
     _addVector(coords, vector) {
@@ -190,7 +184,7 @@ export default class RogueLike extends Component {
     }
 
     _handleMove(vector) {
-        var state = this.state.storeState;
+        var state = this.state.appStore.getState();
         var player = state.entities.player;
         var map = state.map;
         var newCoords = this._addVector({ x: player.x, y: player.y }, vector);
@@ -199,7 +193,7 @@ export default class RogueLike extends Component {
             var entityName = state.occupiedSpaces[newCoords.x + 'x' + newCoords.y];
             // move and return if empty
             if (!entityName) {
-                action.move('player', vector,this.props.store);
+                action.move('player', vector);
                 return;
             }
 
@@ -207,8 +201,8 @@ export default class RogueLike extends Component {
             var entity = state.entities[entityName];
             switch (entity.entityType) {
                 case 'weapon':
-                    action.switchWeapon(entityName, entity.attack,this.props.store);
-                    action.move('player', vector,this.props.store);
+                    action.switchWeapon(entityName, entity.attack);
+                    action.move('player', vector);
                     break;
                 case 'boss':
                 case 'enemy':
@@ -222,8 +216,8 @@ export default class RogueLike extends Component {
                             this._setupGame();
                             return;
                         }
-                        action.damage(entityName, playerAttack,this.props.store);
-                        action.damage('player', enemyAttack,this.props.store);
+                        action.damage(entityName, playerAttack);
+                        action.damage('player', enemyAttack);
                     } else {
                         // Is the enemy a boss?
                         if (entityName === 'boss') {
@@ -231,20 +225,20 @@ export default class RogueLike extends Component {
                             this._setupGame();
                             return;
                         }
-                        action.gainXp((state.level + 1) * constant.ENEMY.xp,this.props.store);
-                        action.removeEntity(entityName,this.props.store);
+                        action.gainXp((state.level + 1) * constant.ENEMY.xp);
+                        action.removeEntity(entityName);
                     }
                     break;
                 case 'health':
-                    action.heal('player', entity.health,this.props.store);
-                    action.removeEntity(entityName,this.props.store);
-                    action.move('player', vector,this.props.store);
+                    action.heal('player', entity.health);
+                    action.removeEntity(entityName);
+                    action.move('player', vector);
                     break;
                 case 'exit':
-                    action.resetBoard(this.props.store);
-                    action.setMap(this.props.mapAlgo(),this.props.store);
-                    action.setLocation('player', this._getEmptyCoords(),this.props.store);
-                    action.increaseLevel(this.props.store);
+                    action.resetBoard();
+                    action.setMap(this.props.mapAlgo());
+                    action.setLocation('player', this._getEmptyCoords());
+                    action.increaseLevel();
                     this._fillMap();
                     break;
                 default:
@@ -359,8 +353,7 @@ export default class RogueLike extends Component {
 // Must be a function that ouputs a matrix of 0 (wall) and 1 (floor) tiles
 RogueLike.propTypes = {
     mapAlgo: PropTypes.func.isRequired,
-    storeState: PropTypes.func.isRequired,
-    store: PropTypes.object.isRequired
+    appStore: PropTypes.object.isRequired
 };
 
 

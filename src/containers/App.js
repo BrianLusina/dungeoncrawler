@@ -13,8 +13,8 @@ const store = configureStore();
  * Every component will be a child to this container
  * */
 class App extends Component {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
 
         this.createMap = this.createMap.bind(this);
     }
@@ -24,8 +24,7 @@ class App extends Component {
             <Provider store={store}>
                 <RogueLike
                     mapAlgo={this.createMap}
-                    storeState={store.getState}
-                    store={store}/>
+                    appStore={store}/>
             </Provider>
         );
     }
