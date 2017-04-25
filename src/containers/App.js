@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
-import RogueLike from '../components/RogueLike';
+import Dungeon from '../components/Dungeon';
 import { tileType } from '../constants/gameConstants';
 import _ from 'lodash';
 import configureStore from '../store/configureStore';
@@ -22,9 +22,9 @@ class App extends Component {
     render() {
         return (
             <Provider store={store}>
-                <RogueLike
+                <Dungeon
                     mapAlgo={this.createMap}
-                    appStore={store}/>
+                    reduxStore={store.getState}/>
             </Provider>
         );
     }

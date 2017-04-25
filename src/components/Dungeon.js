@@ -12,243 +12,24 @@ export default class RogueLike extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            appStore: this.props.appStore
+            reduxStore: this.props.reduxStore,
+            storeState: this.props.reduxStore.getState()
         };
 
         this._select = this._select.bind(this);
     }
 
-    componentWillMount() {
+    componentWillReceiveProps(nextProps){
+        alert("Next Props:" + nextProps);
         this._setupGame();
     }
 
-    componentDidMount() {
-        this._storeDataChanged();
-        this.unsubscribe = this.props.store.subscribe(this._storeDataChanged);
-        window.addEventListener('keydown', this._handleKeypress);
-        window.addEventListener('resize', action.setWindowSize);
-        // Setup touch controls
-        var touchElement = document.getElementById('root');
-        var hammertime = new Hammer(touchElement);
-        hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
-        hammertime.on('swipe', this._handleSwipe);
-    }
-
-    componentWillUnmount() {
-        this.unsubscribe();
-        window.removeEventListener('keydown', this._handleKeypress);
-        window.removeEventListener('resize', action.setWindowSize);
-    }
-
-    _setupGame() {
-        action.resetMap(this.props.mapAlgo());
-        this._fillMap();
-        this._storeDataChanged();
-        action.setWindowSize(this.state.appStore.getState());
-    }
-
-    _storeDataChanged() {
-        let newState = this.props.appStore.getState()();
-        // Should player level up?
-        if (newState.entities.player.toNextLevel <= 0)
-            this._playerLeveledUp();
-        this.setState(this._select(newState));
-    }
-
-    _select(){
-        return {
-            player: this.state.appStore.getState().entities.player,
-            entities: this.state.appStore.getState().entities,
-            map: this.state.appStore.getState().gameMap,
-            occupiedSpaces: this.state.appStore.getState().occupiedSpaces,
-            level: this.state.appStore.getState().level,
-            windowHeight: this.state.appStore.getState().windowHeight,
-            windowWidth: this.state.appStore.getState().windowWidth,
-            darkness: this.state.appStore.getState().darkness
-        };
-    }
-
-    _playerLeveledUp() {
-        let currLevel = this.state.appStore.getState().player.level + 1;
-        action.levelUp(
-            currLevel * constant.PLAYER.attack,
-            currLevel * constant.PLAYER.health,
-            (currLevel + 1) * constant.PLAYER.toNextLevel
-        );
-    }
-
-    _getEmptyCoords() {
-        let map = this._select.map;
-
-        let occupiedSpaces = this._select.occupiedSpaces;
-
-        let coords = undefined, x = undefined, y = undefined;
-        do {
-            x = Math.floor(Math.random() * map.length);
-            y = Math.floor(Math.random() * map[0].length);
-            if (map[x][y] === constant.tileType.FLOOR && !occupiedSpaces[x + 'x' + y]) {
-                coords = { x: x, y: y };
-            }
-        } while (!coords);
-        return coords;
-    }
-
-    _fillMap() {
-        // Place player
-        action.setLocation('player', this._getEmptyCoords());
-        // Place items
-        var state = this.props.appStore.getState()();
-        var weapon = constant.weaponTypes[state.level];
-        action.addEntity(
-            weapon.entityName, 'weapon', weapon.health, weapon.attack, this._getEmptyCoords());
-
-        // Place heath and enemies
-        var NUM_THINGS = 5,
-            HEALTH_VAL = 20,
-            LEVEL_MULT = state.level + 1;
-        for (var i = 0; i < NUM_THINGS; i++) {
-            action.addEntity('health' + i, 'health', HEALTH_VAL, 0, this._getEmptyCoords());
-            action.addEntity(
-                'enemy' + i, 'enemy', LEVEL_MULT * constant.ENEMY.health,
-                LEVEL_MULT * constant.ENEMY.attack,
-                this._getEmptyCoords());
-        }
-
-        // Place exit if not last level
-        if (state.level < 4) action.addEntity('exit', 'exit', 0, 0, this._getEmptyCoords());
-
-        // Place boss on last (fifth) level
-        if (state.level === 4) action.addBoss(125, 500, this._getEmptyCoords());
-    }
-
-    _addVector(coords, vector) {
-        return { x: coords.x + vector.x, y: coords.y + vector.y };
-    }
-
-    _toggleDarkness() {
-        action.toggleDarkness();
-    }
-
-    _handleKeypress(e) {
-        var vector = '';
-        switch (e.keyCode) {
-            case 37:
-                vector = { x: -1, y: 0 };
-                break;
-            case 38:
-                vector = { x: 0, y: -1 };
-                break;
-            case 39:
-                vector = { x: 1, y: 0 };
-                break;
-            case 40:
-                vector = { x: 0, y: 1 };
-                break;
-            default:
-                vector = '';
-                break;
-        }
-        if (vector) {
-            e.preventDefault();
-            this._handleMove(vector);
-        }
-    }
-
-    _handleSwipe(e) {
-        var vector = undefined;
-        var overallVelocity = e.overallVelocity;
-        var angle = e.angle;
-
-        if (Math.abs(overallVelocity) > .75) {
-            // swipe up
-            if (angle > -100 && angle < -80) {
-                vector = { x: 0, y: -1 };
-            }
-            // swipe right
-            if (angle > -10 && angle < 10) {
-                vector = { x: 1, y: 0 };
-            }
-            // swipe down
-            if (angle > 80 && angle < 100) {
-                vector = { x: 0, y: 1 };
-            }
-            // swipe left
-            if (Math.abs(angle) > 170) {
-                vector = { x: -1, y: 0 };
-            }
-        }
-        if (vector) {
-            e.preventDefault();
-            this._handleMove(vector);
-        }
-    }
-
-    _handleMove(vector) {
-        var state = this.state.appStore.getState();
-        var player = state.entities.player;
-        var map = state.map;
-        var newCoords = this._addVector({ x: player.x, y: player.y }, vector);
-        if (newCoords.x > 0 && newCoords.y > 0 && newCoords.x < map.length && newCoords.y < map[0].length && map[newCoords.x][newCoords.y] !== constant.tileType.WALL) {
-            // Tile is not a wall, determine if it contains an entity
-            var entityName = state.occupiedSpaces[newCoords.x + 'x' + newCoords.y];
-            // move and return if empty
-            if (!entityName) {
-                action.move('player', vector);
-                return;
-            }
-
-            // handle encounters with entities
-            var entity = state.entities[entityName];
-            switch (entity.entityType) {
-                case 'weapon':
-                    action.switchWeapon(entityName, entity.attack);
-                    action.move('player', vector);
-                    break;
-                case 'boss':
-                case 'enemy':
-                    var playerAttack = Math.floor(Math.random() * constant.ATTACK_VARIANCE + player.attack - constant.ATTACK_VARIANCE);
-                    var enemyAttack = Math.floor(Math.random() * constant.ATTACK_VARIANCE + entity.attack - constant.ATTACK_VARIANCE);
-                    // Will hit kill enemy?
-                    if (entity.health > playerAttack) {
-                        // Will rebound hit kill player?
-                        if (enemyAttack > player.health) {
-                            notifier.error('You died. Better luck next time!');
-                            this._setupGame();
-                            return;
-                        }
-                        action.damage(entityName, playerAttack);
-                        action.damage('player', enemyAttack);
-                    } else {
-                        // Is the enemy a boss?
-                        if (entityName === 'boss') {
-                            notifier.success('A winner is you!');
-                            this._setupGame();
-                            return;
-                        }
-                        action.gainXp((state.level + 1) * constant.ENEMY.xp);
-                        action.removeEntity(entityName);
-                    }
-                    break;
-                case 'health':
-                    action.heal('player', entity.health);
-                    action.removeEntity(entityName);
-                    action.move('player', vector);
-                    break;
-                case 'exit':
-                    action.resetBoard();
-                    action.setMap(this.props.mapAlgo());
-                    action.setLocation('player', this._getEmptyCoords());
-                    action.increaseLevel();
-                    this._fillMap();
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+    // componentWillMount() {
+    //     this._setupGame();
+    // }
 
     render(){
-        var _state = this.state;
+        var _state = this.state.storeState;
         var map = _state.map;
         var entities = _state.entities;
         var occupiedSpaces = _state.occupiedSpaces;
@@ -347,13 +128,239 @@ export default class RogueLike extends Component {
             </div>
         )
     }
+
+    componentDidMount() {
+        this._storeDataChanged();
+        this.unsubscribe = this.props.reduxStore.subscribe(this._storeDataChanged);
+        window.addEventListener('keydown', this._handleKeypress);
+        window.addEventListener('resize', action.setWindowSize);
+        // Setup touch controls
+        var touchElement = document.getElementById('root');
+        var hammertime = new Hammer(touchElement);
+        hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
+        hammertime.on('swipe', this._handleSwipe);
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe();
+        window.removeEventListener('keydown', this._handleKeypress);
+        window.removeEventListener('resize', action.setWindowSize);
+    }
+
+    _setupGame() {
+        action.resetMap(this.props.mapAlgo());
+        this._fillMap();
+        this._storeDataChanged();
+        action.setWindowSize(this.state.reduxStore.getState());
+    }
+
+    _storeDataChanged() {
+        let newState = this.props.reduxStore.getState()();
+        // Should player level up?
+        if (newState.entities.player.toNextLevel <= 0)
+            this._playerLeveledUp();
+        this.setState(this._select(newState));
+    }
+
+    _select(){
+        let state = this.state.storeState;
+        return {
+            player: state.entities.player,
+            entities: state.entities,
+            map: state.gameMap,
+            occupiedSpaces: state.occupiedSpaces,
+            level: state.level,
+            windowHeight: state.windowHeight,
+            windowWidth: state.windowWidth,
+            darkness: state.darkness
+        };
+    }
+
+    _playerLeveledUp() {
+        let currLevel = this.state.reduxStore.getState().player.level + 1;
+        action.levelUp(
+            currLevel * constant.PLAYER.attack,
+            currLevel * constant.PLAYER.health,
+            (currLevel + 1) * constant.PLAYER.toNextLevel
+        );
+    }
+
+    _getEmptyCoords() {
+        let map = this._select.map;
+
+        let occupiedSpaces = this._select.occupiedSpaces;
+
+        let coords = undefined, x = undefined, y = undefined;
+        do {
+            x = Math.floor(Math.random() * map.length);
+            y = Math.floor(Math.random() * map[0].length);
+            if (map[x][y] === constant.tileType.FLOOR && !occupiedSpaces[x + 'x' + y]) {
+                coords = { x: x, y: y };
+            }
+        } while (!coords);
+        return coords;
+    }
+
+    _fillMap() {
+        // Place player
+        action.setLocation('player', this._getEmptyCoords());
+        // Place items
+        var state = this.props.reduxStore.getState()();
+        var weapon = constant.weaponTypes[state.level];
+        action.addEntity(
+            weapon.entityName, 'weapon', weapon.health, weapon.attack, this._getEmptyCoords());
+
+        // Place heath and enemies
+        var NUM_THINGS = 5,
+            HEALTH_VAL = 20,
+            LEVEL_MULT = state.level + 1;
+        for (var i = 0; i < NUM_THINGS; i++) {
+            action.addEntity('health' + i, 'health', HEALTH_VAL, 0, this._getEmptyCoords());
+            action.addEntity(
+                'enemy' + i, 'enemy', LEVEL_MULT * constant.ENEMY.health,
+                LEVEL_MULT * constant.ENEMY.attack,
+                this._getEmptyCoords());
+        }
+
+        // Place exit if not last level
+        if (state.level < 4) action.addEntity('exit', 'exit', 0, 0, this._getEmptyCoords());
+
+        // Place boss on last (fifth) level
+        if (state.level === 4) action.addBoss(125, 500, this._getEmptyCoords());
+    }
+
+    _addVector(coords, vector) {
+        return { x: coords.x + vector.x, y: coords.y + vector.y };
+    }
+
+    _toggleDarkness() {
+        action.toggleDarkness();
+    }
+
+    _handleKeypress(e) {
+        var vector = '';
+        switch (e.keyCode) {
+            case 37:
+                vector = { x: -1, y: 0 };
+                break;
+            case 38:
+                vector = { x: 0, y: -1 };
+                break;
+            case 39:
+                vector = { x: 1, y: 0 };
+                break;
+            case 40:
+                vector = { x: 0, y: 1 };
+                break;
+            default:
+                vector = '';
+                break;
+        }
+        if (vector) {
+            e.preventDefault();
+            this._handleMove(vector);
+        }
+    }
+
+    _handleSwipe(e) {
+        var vector = undefined;
+        var overallVelocity = e.overallVelocity;
+        var angle = e.angle;
+
+        if (Math.abs(overallVelocity) > .75) {
+            // swipe up
+            if (angle > -100 && angle < -80) {
+                vector = { x: 0, y: -1 };
+            }
+            // swipe right
+            if (angle > -10 && angle < 10) {
+                vector = { x: 1, y: 0 };
+            }
+            // swipe down
+            if (angle > 80 && angle < 100) {
+                vector = { x: 0, y: 1 };
+            }
+            // swipe left
+            if (Math.abs(angle) > 170) {
+                vector = { x: -1, y: 0 };
+            }
+        }
+        if (vector) {
+            e.preventDefault();
+            this._handleMove(vector);
+        }
+    }
+
+    _handleMove(vector) {
+        var state = this.state.reduxStore.getState();
+        var player = state.entities.player;
+        var map = state.map;
+        var newCoords = this._addVector({ x: player.x, y: player.y }, vector);
+        if (newCoords.x > 0 && newCoords.y > 0 && newCoords.x < map.length && newCoords.y < map[0].length && map[newCoords.x][newCoords.y] !== constant.tileType.WALL) {
+            // Tile is not a wall, determine if it contains an entity
+            var entityName = state.occupiedSpaces[newCoords.x + 'x' + newCoords.y];
+            // move and return if empty
+            if (!entityName) {
+                action.move('player', vector);
+                return;
+            }
+
+            // handle encounters with entities
+            var entity = state.entities[entityName];
+            switch (entity.entityType) {
+                case 'weapon':
+                    action.switchWeapon(entityName, entity.attack);
+                    action.move('player', vector);
+                    break;
+                case 'boss':
+                case 'enemy':
+                    var playerAttack = Math.floor(Math.random() * constant.ATTACK_VARIANCE + player.attack - constant.ATTACK_VARIANCE);
+                    var enemyAttack = Math.floor(Math.random() * constant.ATTACK_VARIANCE + entity.attack - constant.ATTACK_VARIANCE);
+                    // Will hit kill enemy?
+                    if (entity.health > playerAttack) {
+                        // Will rebound hit kill player?
+                        if (enemyAttack > player.health) {
+                            notifier.error('You died. Better luck next time!');
+                            this._setupGame();
+                            return;
+                        }
+                        action.damage(entityName, playerAttack);
+                        action.damage('player', enemyAttack);
+                    } else {
+                        // Is the enemy a boss?
+                        if (entityName === 'boss') {
+                            notifier.success('A winner is you!');
+                            this._setupGame();
+                            return;
+                        }
+                        action.gainXp((state.level + 1) * constant.ENEMY.xp);
+                        action.removeEntity(entityName);
+                    }
+                    break;
+                case 'health':
+                    action.heal('player', entity.health);
+                    action.removeEntity(entityName);
+                    action.move('player', vector);
+                    break;
+                case 'exit':
+                    action.resetBoard();
+                    action.setMap(this.props.mapAlgo());
+                    action.setLocation('player', this._getEmptyCoords());
+                    action.increaseLevel();
+                    this._fillMap();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 }
 
 // This is the algorithm for creating the map.
 // Must be a function that ouputs a matrix of 0 (wall) and 1 (floor) tiles
 RogueLike.propTypes = {
     mapAlgo: PropTypes.func.isRequired,
-    appStore: PropTypes.object.isRequired
+    reduxStore: PropTypes.object.isRequired
 };
 
 
