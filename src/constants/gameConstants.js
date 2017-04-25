@@ -1,4 +1,4 @@
-export let _extends = Object.assign || function (target) {
+export let _extends = Object.assign || function(target) {
         for (let i = 1; i < arguments.length; i++) {
             let source = arguments[i];
             for (let key in source) {
@@ -19,32 +19,38 @@ export let tileType = {
 
 export let reverseLookup = ['WALL', 'FLOOR'];
 
-export let weaponTypes = [{
-    entityName: 'brass knuckles',
-    entityType: 'weapon',
-    health: 0,
-    attack: 7
-}, {
-    entityName: 'serrated dagger',
-    entityType: 'weapon',
-    health: 0,
-    attack: 12
-}, {
-    entityName: 'katana',
-    entityType: 'weapon',
-    health: 0,
-    attack: 16
-}, {
-    entityName: 'reaper\'s scythe',
-    entityType: 'weapon',
-    health: 0,
-    attack: 22
-}, {
-    entityName: 'large trout',
-    entityType: 'weapon',
-    health: 0,
-    attack: 30
-}];
+export let weaponTypes = [
+    {
+        entityName: 'brass knuckles',
+        entityType: 'weapon',
+        health: 0,
+        attack: 7
+    },
+    {
+        entityName: 'serrated dagger',
+        entityType: 'weapon',
+        health: 0,
+        attack: 12
+    },
+    {
+        entityName: 'katana',
+        entityType: 'weapon',
+        health: 0,
+        attack: 16
+    },
+    {
+        entityName: 'reaper\'s scythe',
+        entityType: 'weapon',
+        health: 0,
+        attack: 22
+    },
+    {
+        entityName: 'large trout',
+        entityType: 'weapon',
+        health: 0,
+        attack: 30
+    }
+];
 
 // enemy attacks and health are the dungeon level + 1 times these constants
 export let ENEMY = {
@@ -52,6 +58,7 @@ export let ENEMY = {
     attack: 12,
     xp: 10
 };
+
 export let PLAYER = {
     baseHealth: 100,
     health: 20,

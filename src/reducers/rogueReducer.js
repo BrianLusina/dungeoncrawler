@@ -7,21 +7,21 @@ import _ from 'lodash';
  * Pure reducer function that will handle the changes in the state of the application
  * The state tree of the application will be reduced using actions that will be dispatched
  * to the store and return the next state of the application
- *
  * @param{object} state the current state of the  application
  * @param{object} action the action to dispatch to the store
  * @return{object} next state of the application
  * */
-export default function rogueLikeReducer(state = initialState, action) {
+export default function rogueReducer(state = initialState, action) {
     let _extends2, _extends3, _extends4, _extends5, _extends6, _extends7, _occupiedSpaces, _extends8;
 
     switch (action.type) {
         case types.DAMAGE:
             return gConstants._extends({}, state, {
-                entities: gConstants._extends({},
-                    state.entities,
-                    (_extends2 = {}, _extends2[action.entityName] = gConstants._extends({}, state.entities[action.entityName], {
-                        health: state.entities[action.entityName].health - action.value
+                entities: gConstants._extends({}, state.entities,
+                    (_extends2 = {},
+                        _extends2[action.entityName] = gConstants._extends({},
+                            state.entities[action.entityName],
+                            { health: state.entities[action.entityName].health - action.value
                     }), _extends2)
                 )
             });

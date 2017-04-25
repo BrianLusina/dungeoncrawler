@@ -1,4 +1,4 @@
-import rogueLikeReducer from './rogueLikeReducer';
+import rogueLikeReducer from './rogueReducer';
 import { combineReducers } from 'redux';
 
 const rootReducer = combineReducers({

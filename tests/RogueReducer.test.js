@@ -1,8 +1,5 @@
-/**
- * @author lusinabrian on 25/04/17.
- */
 import expect from 'expect';
-import rogueReducer from '../src/reducers/rogueLikeReducer';
+import rogueReducer from '../src/reducers/rogueReducer';
 import * as types from '../src/constants/actionTypes';
 
 describe("Rogue reducer tests", function(){
@@ -35,5 +32,6 @@ describe("Rogue reducer tests", function(){
     it("should return the initial state when undefined is the state argument", ()=>{
         expect(rogueReducer(undefined, {})).toEqual(initalState);
     });
+
 
 });
