@@ -12,6 +12,76 @@ function batchActions(actions) {
     return { type: types.BATCH, payload: actions };
 }
 
+
+//ACTION-CREATORS
+function addWeapon(payload) {
+    return {
+        type: types.ADD_WEAPON,
+        payload: payload
+    };
+}
+
+function addXP(payload) {
+    return {
+        type: t.ADD_XP,
+        payload: payload
+    };
+}
+
+function changeEntity(entity, coords) {
+    return {
+        type: t.CHANGE_ENTITY,
+        payload: { entity: entity, coords: coords }
+    };
+}
+
+function changePlayerPosition(payload) {
+    return {
+        type: t.CHANGE_PLAYER_POSITION,
+        payload: payload
+    };
+}
+
+function _createLevel(level) {
+    return {
+        type: t.CREATE_LEVEL,
+        payload: populateEntities(createMap(), level)
+    };
+}
+
+function modifyHealth(payload) {
+    return {
+        type: t.MODIFY_HEALTH,
+        payload: payload
+    };
+}
+
+function newMessage(payload) {
+    return {
+        type: t.NEW_MESSAGE,
+        payload: payload
+    };
+}
+
+function restart() {
+    return {
+        type: t.RESTART
+    };
+}
+
+function _setDungeonLevel(payload) {
+    return {
+        type: t.SET_DUNGEON_LEVEL,
+        payload: payload
+    };
+}
+
+function _toggleFogMode() {
+    return {
+        type: t.TOGGLE_FOG_MODE
+    };
+}
+
 export const damage = (entity, value) =>({
    type: types.DAMAGE,
     entity, value
