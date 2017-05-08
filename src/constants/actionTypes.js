@@ -2,6 +2,8 @@
  * @author lusinabrian on 24/04/17.
  * Constants that will define the actions that will be used in the application
  */
+// Redux batched actions
+export const BATCH = "BATCHING_REDUCER.BATCH";
 
 export const DAMAGE = 'DAMAGE';
 export const HEAL = 'HEAL';

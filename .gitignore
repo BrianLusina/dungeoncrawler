@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-
+*.map
 # testing
 /coverage
 .idea/

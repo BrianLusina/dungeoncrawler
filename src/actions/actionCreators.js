@@ -3,6 +3,14 @@
  * */
 import * as types from '../constants/actionTypes';
 
+/**
+ * Batch all actions before dispatching them to the store
+ * @param{Object} actions actions to dispatch to store
+ * @return{object}
+ * */
+function batchActions(actions) {
+    return { type: types.BATCH, payload: actions };
+}
 
 export const damage = (entity, value) =>({
    type: types.DAMAGE,

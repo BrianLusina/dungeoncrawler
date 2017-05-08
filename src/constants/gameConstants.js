@@ -66,7 +66,23 @@ export let PLAYER = {
     toNextLevel: 60
 };
 
-// Setup humane toast notifiers
-// let notifier = humane.create({ baseCls: 'humane-jackedup', timeout: 5000 });
-// notifier.error = notifier.spawn({ addnCls: 'humane-jackedup-error' });
-// notifier.success = notifier.spawn({ addnCls: 'humane-jackedup-success' });
+export let c = {
+    GRID_HEIGHT: 60,
+    GRID_WIDTH: 80,
+    MAX_ROOMS: 15,
+    ROOM_SIZE_RANGE: [7, 12],
+    STARTING_ROOM_POSITION: [40, 40]
+};
+
+export let t = {
+    ADD_WEAPON: 'ADD_WEAPON',
+    ADD_XP: 'ADD_XP',
+    CHANGE_ENTITY: 'CHANGE_ENTITY',
+    CHANGE_PLAYER_POSITION: 'CHANGE_PLAYER_POSITION',
+    CREATE_LEVEL: 'CREATE_LEVEL',
+    MODIFY_HEALTH: 'MODIFY_HEALTH',
+    NEW_MESSAGE: 'NEW_MESSAGE',
+    RESTART: 'RESTART',
+    SET_DUNGEON_LEVEL: 'SET_DUNGEON_LEVEL',
+    TOGGLE_FOG_MODE: 'TOGGLE_FOG_MOD'
+};

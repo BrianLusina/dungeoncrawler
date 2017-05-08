@@ -1,823 +1,816 @@
 'use strict';
 
-// This codebase uses react and redux and heavily utilizes certain ES2015
-// features like spread operators, destructuring, const, let, and
-// arrow functions.
-// I'd highly recommend looking into them if any of these technologies are
-// unfamiliar
-
-// Game constants
-
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var ATTACK_VARIANCE = 7;
-var tileType = {
-    WALL: 0,
-    FLOOR: 1
-};
-var reverseLookup = ['WALL', 'FLOOR'];
-var weaponTypes = [{
-    entityName: 'brass knuckles',
-    entityType: 'weapon',
-    health: 0,
-    attack: 7
-}, {
-    entityName: 'serrated dagger',
-    entityType: 'weapon',
-    health: 0,
-    attack: 12
-}, {
-    entityName: 'katana',
-    entityType: 'weapon',
-    health: 0,
-    attack: 16
-}, {
-    entityName: 'reaper\'s scythe',
-    entityType: 'weapon',
-    health: 0,
-    attack: 22
-}, {
-    entityName: 'large trout',
-    entityType: 'weapon',
-    health: 0,
-    attack: 30
-}];
-// enemy attacks and health are the dungeon level + 1 times these constants
-var ENEMY = {
-    health: 20,
-    attack: 12,
-    xp: 10
-};
-var PLAYER = {
-    baseHealth: 100,
-    health: 20,
-    attack: 12,
-    toNextLevel: 60
-};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-// Setup humane toast notifiers
-var notifier = humane.create({ baseCls: 'humane-jackedup', timeout: 5000 });
-notifier.error = notifier.spawn({ addnCls: 'humane-jackedup-error' });
-notifier.success = notifier.spawn({ addnCls: 'humane-jackedup-success' });
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-/** REDUX code **/
-// REDUX Bound Action Creators
-function damage(entity, value) {
-    store.dispatch({ type: 'DAMAGE', entityName: entity, value: value });
-}
-function heal(entity, health) {
-    store.dispatch({ type: 'HEAL', entityName: entity, value: health });
-}
-function move(entity, vector) {
-    store.dispatch({ type: 'MOVE', entityName: entity, vector: vector });
-}
-function setLocation(entity, location) {
-    store.dispatch({ type: 'SET_LOCATION', entityName: entity, location: location });
-}
-function switchWeapon(weaponName, attack) {
-    store.dispatch({ type: 'SWITCH_WEAPON', weapon: weaponName, attack: attack });
-}
-function addEntity(entityName, entityType, health, attack, location) {
-    store.dispatch({ type: 'ADD_ENTITY', entityName: entityName, entityType: entityType,
-        health: health, attack: attack, location: location });
-}
-function removeEntity(entityName) {
-    store.dispatch({ type: 'REMOVE_ENTITY', entityName: entityName });
-}
-function resetBoard() {
-    store.dispatch({ type: 'RESET_BOARD' });
-}
-function setMap(map) {
-    store.dispatch({ type: 'SET_MAP', map: map });
-}
-function increaseLevel() {
-    store.dispatch({ type: 'INCREASE_LEVEL' });
-}
-function resetLevel() {
-    store.dispatch({ type: 'RESET_LEVEL' });
-}
-function setWindowSize() {
-    store.dispatch({ type: 'SET_WINDOW_SIZE',
-        windowWidth: window.innerWidth,
-        windowHeight: window.innerHeight
-    });
-}
-function gainXp(xp) {
-    store.dispatch({ type: 'GAIN_XP', xp: xp });
-}
-function levelUp(attack, health, xp) {
-    store.dispatch({ type: 'LEVEL_UP',
-        attack: attack,
-        health: health,
-        toNextLevel: xp
-    });
-}
-function resetMap(map) {
-    store.dispatch({ type: 'RESET_MAP', map: map });
-}
-function addBoss(attack, health, coords) {
-    store.dispatch({ type: 'ADD_BOSS', attack: attack, health: health, location: coords });
-}
-function toggleDarkness() {
-    store.dispatch({ type: 'TOGGLE_DARKNESS' });
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// You may prefer to view the source at https://github.com/thepeted/dungeon-crawler
+
+//REACT & REDUX LIBRARIES SET UP
+var _React = React;
+var Component = _React.Component;
+var update = React.addons.update;
+var _Redux = Redux;
+var createStore = _Redux.createStore;
+var applyMiddleware = _Redux.applyMiddleware;
+var _ReactRedux = ReactRedux;
+var Provider = _ReactRedux.Provider;
+var _ReactRedux2 = ReactRedux;
+var connect = _ReactRedux2.connect;
+var _Redux2 = Redux;
+var combineReducers = _Redux2.combineReducers;
+
+var thunk = ReduxThunk.default;
+
+//ACTION-CREATORS
+function addWeapon(payload) {
+    return {
+        type: t.ADD_WEAPON,
+        payload: payload
+    };
 }
 
-// REDUX Initial State
-var initialState = {
-    // entities is an map of ids to object describing the entity
-    entities: {
-        'player': {
-            entityType: 'player',
-            x: 0,
-            y: 0,
-            health: 100,
-            inventory: {},
-            weapon: 'stick',
-            attack: 7,
-            level: 0,
-            toNextLevel: 60
+function addXP(payload) {
+    return {
+        type: t.ADD_XP,
+        payload: payload
+    };
+}
+
+function changeEntity(entity, coords) {
+    return {
+        type: t.CHANGE_ENTITY,
+        payload: { entity: entity, coords: coords }
+    };
+}
+
+function changePlayerPosition(payload) {
+    return {
+        type: t.CHANGE_PLAYER_POSITION,
+        payload: payload
+    };
+}
+
+function _createLevel(level) {
+    return {
+        type: t.CREATE_LEVEL,
+        payload: populateEntities(createMap(), level)
+    };
+}
+
+function modifyHealth(payload) {
+    return {
+        type: t.MODIFY_HEALTH,
+        payload: payload
+    };
+}
+
+function newMessage(payload) {
+    return {
+        type: t.NEW_MESSAGE,
+        payload: payload
+    };
+}
+
+function restart() {
+    return {
+        type: t.RESTART
+    };
+}
+
+function _setDungeonLevel(payload) {
+    return {
+        type: t.SET_DUNGEON_LEVEL,
+        payload: payload
+    };
+}
+
+function _toggleFogMode() {
+    return {
+        type: t.TOGGLE_FOG_MODE
+    };
+}
+
+// a thunk!
+var _playerInput = function _playerInput(vector) {
+    return function (dispatch, getState) {
+        var _getState = getState();
+
+        var grid = _getState.grid;
+        var player = _getState.player;
+
+        // cache some useful variables
+
+        var _grid$playerPosition$ = grid.playerPosition.slice(0);
+
+        var x = _grid$playerPosition$[0];
+        var y = _grid$playerPosition$[1]; // get current location
+
+        var vectorX = vector[0];
+        var vectorY = vector[1]; // get direction modifier
+
+        var newPosition = [vectorX + x, vectorY + y]; // define where we're moving to
+        var newPlayer = grid.entities[y][x];
+        var destination = grid.entities[y + vectorY][x + vectorX]; // whats in the cell we're heading to
+        // store the actions in array to be past to batchActions
+        var actions = [];
+
+        // move the player unless destination is an enemy or a '0' cell
+        if (destination.type && destination.type !== 'enemy' && destination.type !== 'boss') {
+            actions.push(changeEntity({ type: 'floor' }, [x, y]), changeEntity(newPlayer, newPosition), changePlayerPosition(newPosition));
         }
-    },
-    // Link occupied space with entity id
-    occupiedSpaces: {
-        '0x0': 'player'
-    },
-    map: [],
-    level: 0,
-    windowHeight: 500,
-    windowWidth: 500,
-    darkness: true
-};
+        switch (destination.type) {
+            case 'boss':
+            case 'enemy':
+            {
+                var playerLevel = Math.floor(player.xp / 100);
+                // player attacks enemy
+                var enemyDamageTaken = Math.floor(player.weapon.damage * _.random(1, 1.3) * playerLevel);
+                destination.health -= enemyDamageTaken;
 
-// REDUX Reducer
-function rogueLikeReducer() {
-    var _extends2, _extends3, _extends4, _extends5, _extends6, _extends7, _occupiedSpaces, _extends8;
+                if (destination.health > 0) {
+                    // enemy attacks player
+                    var playerDamageTaken = Math.floor(_.random(4, 7) * destination.level);
 
-    var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
-    var action = arguments[1];
+                    actions.push(changeEntity(destination, newPosition), modifyHealth(player.health - playerDamageTaken), newMessage('FIGHT! You hurt the enemy with attack of [' + enemyDamageTaken + '].\tThe enemy hits back with an attack of [' + playerDamageTaken + '].  Enemy has [' + destination.health + '] health remaining.'));
 
-    switch (action.type) {
-        case 'DAMAGE':
-            return _extends({}, state, {
-                entities: _extends({}, state.entities, (_extends2 = {}, _extends2[action.entityName] = _extends({}, state.entities[action.entityName], {
-                    health: state.entities[action.entityName].health - action.value
-                }), _extends2))
-            });
-        case 'HEAL':
-            return _extends({}, state, {
-                entities: _extends({}, state.entities, (_extends3 = {}, _extends3[action.entityName] = _extends({}, state.entities[action.entityName], {
-                    health: state.entities.player.health + action.value
-                }), _extends3))
-            });
-        case 'SWITCH_WEAPON':
-            return _extends({}, state, {
-                entities: _extends({}, state.entities, {
-                    'player': _extends({}, state.entities.player, {
-                        weapon: action.weapon,
-                        attack: state.entities.player.attack + action.attack
-                    })
-                })
-            });
-        case 'MOVE':
-            return _extends({}, state, {
-                occupiedSpaces: _.chain(state.occupiedSpaces).omit(state.entities[action.entityName].x + 'x' + state.entities[action.entityName].y).set(state.entities[action.entityName].x + action.vector.x + 'x' + (state.entities[action.entityName].y + action.vector.y), action.entityName).value(),
-                entities: _extends({}, state.entities, (_extends4 = {}, _extends4[action.entityName] = _extends({}, state.entities[action.entityName], {
-                    x: state.entities[action.entityName].x + action.vector.x,
-                    y: state.entities[action.entityName].y + action.vector.y
-                }), _extends4))
-            });
-        case 'SET_LOCATION':
-            return _extends({}, state, {
-                occupiedSpaces: _.chain(state.occupiedSpaces).omit(state.entities[action.entityName].x + 'x' + state.entities[action.entityName].y).set(action.location.x + 'x' + action.location.y, action.entityName).value(),
-                entities: _extends({}, state.entities, (_extends5 = {}, _extends5[action.entityName] = _extends({}, state.entities[action.entityName], {
-                    x: action.location.x,
-                    y: action.location.y
-                }), _extends5))
-            });
-        case 'ADD_ENTITY':
-            return _extends({}, state, {
-                occupiedSpaces: _extends({}, state.occupiedSpaces, (_extends6 = {}, _extends6[action.location.x + 'x' + action.location.y] = action.entityName, _extends6)),
-                entities: _extends({}, state.entities, (_extends7 = {}, _extends7[action.entityName] = {
-                    entityType: action.entityType,
-                    health: action.health,
-                    attack: action.attack,
-                    x: action.location.x,
-                    y: action.location.y
-                }, _extends7))
-            });
-        case 'REMOVE_ENTITY':
-            return _extends({}, state, {
-                occupiedSpaces: _.chain(state.occupiedSpaces).omit(state.entities[action.entityName].x + 'x' + state.entities[action.entityName].y).value(),
-                entities: _.chain(state.entities).omit(action.entityName).value()
-            });
-        case 'RESET_BOARD':
-            return _extends({}, state, {
-                entities: {
-                    'player': state.entities.player
-                },
-                occupiedSpaces: (_occupiedSpaces = {}, _occupiedSpaces[state.entities.player.x + 'x' + state.entities.player.y] = 'player', _occupiedSpaces)
-            });
-        case 'SET_MAP':
-            return _extends({}, state, {
-                map: action.map
-            });
-        case 'INCREASE_LEVEL':
-            return _extends({}, state, {
-                level: state.level + 1
-            });
-        case 'RESET_LEVEL':
-            return _extends({}, state, {
-                level: 0
-            });
-        case 'SET_WINDOW_SIZE':
-            return _extends({}, state, {
-                windowHeight: action.windowHeight,
-                windowWidth: action.windowWidth
-            });
-        case 'GAIN_XP':
-            return _extends({}, state, {
-                entities: _extends({}, state.entities, {
-                    'player': _extends({}, state.entities.player, {
-                        toNextLevel: state.entities.player.toNextLevel - action.xp
-                    })
-                })
-            });
-        case 'LEVEL_UP':
-            return _extends({}, state, {
-                entities: _extends({}, state.entities, {
-                    'player': _extends({}, state.entities.player, {
-                        attack: state.entities.player.attack + action.attack,
-                        health: state.entities.player.health + action.health,
-                        toNextLevel: action.toNextLevel,
-                        level: state.entities.player.level + 1
-                    })
-                })
-            });
-        case 'RESET_MAP':
-            return _extends({}, initialState, {
-                map: action.map
-            });
-        case 'ADD_BOSS':
-            return _extends({}, state, {
-                occupiedSpaces: _extends({}, state.occupiedSpaces, (_extends8 = {}, _extends8[action.location.x + 'x' + action.location.y] = 'boss', _extends8[action.location.x + 1 + 'x' + action.location.y] = 'boss', _extends8[action.location.x + 'x' + (action.location.y + 1)] = 'boss', _extends8[action.location.x + 1 + 'x' + (action.location.y + 1)] = 'boss', _extends8)),
-                entities: _extends({}, state.entities, {
-                    boss: {
-                        entityType: 'enemy',
-                        health: action.health,
-                        attack: action.attack,
-                        x: action.location.x,
-                        y: action.location.y
+                    if (player.health - playerDamageTaken <= 0) {
+                        // player dies
+                        dispatch(modifyHealth(0));
+                        setTimeout(function () {
+                            return dispatch(_setDungeonLevel('death'));
+                        }, 250);
+                        setTimeout(function () {
+                            return dispatch(newMessage('YOU DIED'));
+                        }, 1000);
+                        setTimeout(function () {
+                            return dispatch(newMessage('Everything goes dark..'));
+                        }, 2000);
+                        setTimeout(function () {
+                            return dispatch(newMessage('You resolve to try harder next time'));
+                        }, 4000);
+                        setTimeout(function () {
+                            return dispatch(newMessage('The grid resets itself....'));
+                        }, 6000);
+                        setTimeout(function () {
+                            return dispatch(batchActions([restart(), _createLevel(1), _setDungeonLevel(1)]));
+                        }, 8000);
+                        return;
                     }
-                })
-            });
-        case 'TOGGLE_DARKNESS':
-            return _extends({}, state, {
-                darkness: !state.darkness
-            });
-        default:
-            return state;
-    }
-    return state;
-}
+                }
 
-// REDUX Store
-var store = Redux.createStore(rogueLikeReducer);
-
-// REACT UI
-var RogueLike = React.createClass({
-    displayName: 'RogueLike',
-
-    propTypes: {
-        // This is the algorithm for creating the map.
-        // Must be a function that ouputs a matrix of 0 (wall) and 1 (floor) tiles
-        mapAlgo: React.PropTypes.func.isRequired,
-        getState: React.PropTypes.func.isRequired
-    },
-    getInitialState: function getInitialState() {
-        return this._select(this.props.getState());
-    },
-    componentWillMount: function componentWillMount() {
-        this._setupGame();
-    },
-    componentDidMount: function componentDidMount() {
-        this._storeDataChanged();
-        this.unsubscribe = store.subscribe(this._storeDataChanged);
-        window.addEventListener('keydown', this._handleKeypress);
-        window.addEventListener('resize', setWindowSize);
-        // Setup touch controls
-        var touchElement = document.getElementById('root');
-        var hammertime = new Hammer(touchElement);
-        hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
-        hammertime.on('swipe', this._handleSwipe);
-    },
-    componentWillUnmount: function componentWillUnmount() {
-        this.unsubscribe();
-        window.removeEventListener('keydown', this._handleKeypress);
-        window.removeEventListener('resize', setWindowSize);
-    },
-    _storeDataChanged: function _storeDataChanged() {
-        var newState = this.props.getState();
-        // Should player level up?
-        if (newState.entities.player.toNextLevel <= 0) this._playerLeveledUp();
-        this.setState(this._select(newState));
-    },
-    _select: function _select(state) {
-        return {
-            player: state.entities.player,
-            entities: state.entities,
-            map: state.map,
-            occupiedSpaces: state.occupiedSpaces,
-            level: state.level,
-            windowHeight: state.windowHeight,
-            windowWidth: state.windowWidth,
-            darkness: state.darkness
-        };
-    },
-    _playerLeveledUp: function _playerLeveledUp() {
-        var currLevel = this.state.player.level + 1;
-        levelUp(currLevel * PLAYER.attack, currLevel * PLAYER.health, (currLevel + 1) * PLAYER.toNextLevel);
-    },
-    _setupGame: function _setupGame() {
-        resetMap(this.props.mapAlgo());
-        this._fillMap();
-        this._storeDataChanged();
-        setWindowSize();
-    },
-    _getEmptyCoords: function _getEmptyCoords() {
-        var _props$getState = this.props.getState();
-
-        var map = _props$getState.map;
-        var occupiedSpaces = _props$getState.occupiedSpaces;
-
-        var coords = undefined,
-            x = undefined,
-            y = undefined;
-        do {
-            x = Math.floor(Math.random() * map.length);
-            y = Math.floor(Math.random() * map[0].length);
-            if (map[x][y] === tileType.FLOOR && !occupiedSpaces[x + 'x' + y]) {
-                coords = { x: x, y: y };
+                if (destination.health <= 0) {
+                    // the fight is over and the player has won
+                    // add XP and move the player
+                    if (destination.type === 'boss') {
+                        actions.push(addXP(10), changeEntity({ type: 'floor' }, [x, y]), changeEntity(newPlayer, newPosition), changePlayerPosition(newPosition), newMessage('VICTORY! Your attack of [' + enemyDamageTaken + '] is too powerful for the enemy, who dissolves before your very eyes.'));
+                        setTimeout(function () {
+                            return dispatch(_setDungeonLevel('victory'));
+                        }, 250);
+                        setTimeout(function () {
+                            return dispatch(newMessage('YOU DEFATED THE BOSS!'));
+                        }, 1000);
+                        setTimeout(function () {
+                            return dispatch(newMessage('The BOSS emits an almighty scream'));
+                        }, 2000);
+                        setTimeout(function () {
+                            return dispatch(newMessage('You bask momentarily in your glory'));
+                        }, 4000);
+                        setTimeout(function () {
+                            return dispatch(newMessage('The grid resets itself....'));
+                        }, 6000);
+                        setTimeout(function () {
+                            return dispatch(batchActions([restart(), _createLevel(1), _setDungeonLevel(1)]));
+                        }, 8000);
+                    } else {
+                        actions.push(addXP(10), changeEntity({ type: 'floor' }, [x, y]), changeEntity(newPlayer, newPosition), changePlayerPosition(newPosition), newMessage('VICTORY! Your attack of [' + enemyDamageTaken + '] is too powerful for the enemy, who dissolves before your very eyes.'));
+                        setTimeout(function () {
+                            return dispatch(newMessage('You gain 10XP and feel yourself growing stronger..'));
+                        }, 2500);
+                        if ((player.xp + 10) % 100 === 0) {
+                            setTimeout(function () {
+                                return dispatch(newMessage('LEVEL UP!'));
+                            }, 5000);
+                        }
+                    }
+                }
+                break;
             }
-        } while (!coords);
-        return coords;
-    },
-    _fillMap: function _fillMap() {
-        // Place player
-        setLocation('player', this._getEmptyCoords());
-        // Place items
-        var state = this.props.getState();
-        var weapon = weaponTypes[state.level];
-        addEntity(weapon.entityName, 'weapon', weapon.health, weapon.attack, this._getEmptyCoords());
-        // Place heath and enemies
-        var NUM_THINGS = 5,
-            HEALTH_VAL = 20,
-            LEVEL_MULT = state.level + 1;
-        for (var i = 0; i < NUM_THINGS; i++) {
-            addEntity('health' + i, 'health', HEALTH_VAL, 0, this._getEmptyCoords());
-            addEntity('enemy' + i, 'enemy', LEVEL_MULT * ENEMY.health, LEVEL_MULT * ENEMY.attack, this._getEmptyCoords());
-        }
-        // Place exit if not last level
-        if (state.level < 4) addEntity('exit', 'exit', 0, 0, this._getEmptyCoords());
-        // Place boss on last (fifth) level
-        if (state.level === 4) addBoss(125, 500, this._getEmptyCoords());
-    },
-    _addVector: function _addVector(coords, vector) {
-        return { x: coords.x + vector.x, y: coords.y + vector.y };
-    },
-    _toggleDarkness: function _toggleDarkness() {
-        toggleDarkness();
-    },
-    _handleKeypress: function _handleKeypress(e) {
-        var vector = '';
-        switch (e.keyCode) {
-            case 37:
-                vector = { x: -1, y: 0 };
+            case 'exit':
+                setTimeout(function () {
+                    return dispatch(batchActions([_setDungeonLevel(grid.dungeonLevel + 1), _createLevel(grid.dungeonLevel + 1)]));
+                }, 3000);
+                actions.push(newMessage('The cells start to shift... you transit to zone ' + (grid.dungeonLevel + 1)));
+                setTimeout(function () {
+                    return dispatch(_setDungeonLevel('transit-' + (grid.dungeonLevel + 1)));
+                }, 250);
                 break;
-            case 38:
-                vector = { x: 0, y: -1 };
+            case 'potion':
+                actions.push(modifyHealth(player.health + 30), newMessage('You drink a potion for [30] health'));
                 break;
-            case 39:
-                vector = { x: 1, y: 0 };
-                break;
-            case 40:
-                vector = { x: 0, y: 1 };
+            case 'weapon':
+                actions.push(addWeapon(destination), newMessage('You pick up a ' + destination.name));
                 break;
             default:
-                vector = '';
                 break;
         }
-        if (vector) {
-            e.preventDefault();
-            this._handleMove(vector);
-        }
-    },
-    _handleSwipe: function _handleSwipe(e) {
-        var vector = undefined;
-        var overallVelocity = e.overallVelocity;
-        var angle = e.angle;
+        dispatch(batchActions(actions));
+    };
+};
 
-        if (Math.abs(overallVelocity) > .75) {
-            // swipe up
-            if (angle > -100 && angle < -80) {
-                vector = { x: 0, y: -1 };
-            }
-            // swipe right
-            if (angle > -10 && angle < 10) {
-                vector = { x: 1, y: 0 };
-            }
-            // swipe down
-            if (angle > 80 && angle < 100) {
-                vector = { x: 0, y: 1 };
-            }
-            // swipe left
-            if (Math.abs(angle) > 170) {
-                vector = { x: -1, y: 0 };
-            }
-        }
-        if (vector) {
-            e.preventDefault();
-            this._handleMove(vector);
-        }
-    },
-    _handleMove: function _handleMove(vector) {
-        var state = this.props.getState();
-        var player = state.entities.player;
-        var map = state.map;
-        var newCoords = this._addVector({ x: player.x, y: player.y }, vector);
-        if (newCoords.x > 0 && newCoords.y > 0 && newCoords.x < map.length && newCoords.y < map[0].length && map[newCoords.x][newCoords.y] !== tileType.WALL) {
-            // Tile is not a wall, determine if it contains an entity
-            var entityName = state.occupiedSpaces[newCoords.x + 'x' + newCoords.y];
-            // move and return if empty
-            if (!entityName) {
-                move('player', vector);
-                return;
-            }
-            // handle encounters with entities
-            var entity = state.entities[entityName];
-            switch (entity.entityType) {
-                case 'weapon':
-                    switchWeapon(entityName, entity.attack);
-                    move('player', vector);
+var openingMessages = function openingMessages() {
+    return function (dispatch) {
+        dispatch(newMessage('Welcome to The Grid...'));
+        setTimeout(function () {
+            dispatch(newMessage('You find yourself in a world filled with strange cells'));
+        }, 3000);
+        setTimeout(function () {
+            dispatch(newMessage('\'Hmm... there must be a way out of here..\''));
+        }, 6000);
+    };
+};
+
+var _restartGame = function _restartGame() {
+    return function (dispatch) {
+        dispatch(newMessage('The grid resets itself....'));
+        setTimeout(function () {
+            return dispatch(batchActions([restart(), _createLevel(1), _setDungeonLevel(1)]));
+        }, 1000);
+    };
+};
+
+// COMPONENTS
+var Cell = function Cell(_ref4) {
+    var cell = _ref4.cell;
+    var distance = _ref4.distance;
+    var visible = _ref4.visible;
+    var zone = _ref4.zone;
+
+    var opacityValue = cell.opacity;
+    if (visible && distance > 10) {
+        opacityValue = 0;
+    } else if (cell.type !== 0) {
+        opacityValue = 1;
+    }
+
+    return React.createElement('div', {
+        className: cell.type ? cell.type + ' cell' : 'back-' + zone + ' cell',
+        style: { opacity: opacityValue }
+    });
+};
+
+var Header = function Header(_ref5) {
+    var level = _ref5.level;
+
+    return React.createElement(
+        'div',
+        { className: 'strip' },
+        React.createElement(
+            'h1',
+            null,
+            React.createElement(
+                'span',
+                {
+                    className: 'title title-' + level
+                },
+                'THE GRID'
+            ),
+            ' - Roguelike'
+        )
+    );
+};
+
+var Score = function Score(_ref6) {
+    var iconClass = _ref6.iconClass;
+    var title = _ref6.title;
+    var value = _ref6.value;
+
+    return React.createElement(
+        'div',
+        { className: 'score-item' },
+        React.createElement('div', { className: 'icon cell ' + iconClass }),
+        React.createElement(
+            'span',
+            { className: 'score-label' },
+            title + ': ' + value
+        )
+    );
+};
+
+//CONTAINERS
+
+var Game_ = function (_Component) {
+    _inherits(Game_, _Component);
+
+    function Game_() {
+        _classCallCheck(this, Game_);
+
+        var _this = _possibleConstructorReturn(this, _Component.call(this));
+
+        _this.state = {
+            viewportWidth: 0,
+            viewportHeight: 0
+        };
+
+        _this.handleKeyPress = _this.handleKeyPress.bind(_this);
+        _this.handleResize = _this.handleResize.bind(_this);
+
+        _this.VP_HEIGHT_OFFSET = 5; // in ems to match elements above this component
+        _this.VP_MINIMUM_HEIGHT = 22; // in ems
+        // set ratios for determining the viewport size
+        _this.VP_WIDTH_RATIO = 30;
+        _this.VP_HEIGHT_RATIO = 21;
+        return _this;
+    }
+
+    Game_.prototype.componentWillMount = function componentWillMount() {
+        // set the initial veiwport size
+        var viewportWidth = window.innerWidth / this.VP_WIDTH_RATIO;
+        var viewportHeight = Math.max(this.VP_MINIMUM_HEIGHT, window.innerHeight / this.VP_HEIGHT_RATIO - this.VP_HEIGHT_OFFSET);
+        this.setState({ viewportWidth: viewportWidth, viewportHeight: viewportHeight });
+        this.props.createLevel();
+        this.props.setDungeonLevel(1);
+    };
+
+    Game_.prototype.componentDidMount = function componentDidMount() {
+        window.addEventListener('keydown', _.throttle(this.handleKeyPress, 100));
+        window.addEventListener('resize', _.debounce(this.handleResize, 500));
+        this.props.triggerOpeningMessages();
+    };
+
+    Game_.prototype.componentWillUnmount = function componentWillUnmount() {
+        window.removeEventListener('keydown', _.throttle(this.handleKeyPress, 100));
+        window.removeEventListener('resize', _.debounce(this.handleResize, 500));
+    };
+
+    Game_.prototype.handleKeyPress = function handleKeyPress(e) {
+        if (typeof this.props.grid.dungeonLevel === 'number') {
+            switch (e.keyCode) {
+                // north
+                case 38:
+                case 87:
+                    this.props.playerInput([0, -1]);
                     break;
-                case 'boss':
-                case 'enemy':
-                    var playerAttack = Math.floor(Math.random() * ATTACK_VARIANCE + player.attack - ATTACK_VARIANCE);
-                    var enemyAttack = Math.floor(Math.random() * ATTACK_VARIANCE + entity.attack - ATTACK_VARIANCE);
-                    // Will hit kill enemy?
-                    if (entity.health > playerAttack) {
-                        // Will rebound hit kill player?
-                        if (enemyAttack > player.health) {
-                            notifier.error('You died. Better luck next time!');
-                            this._setupGame();
-                            return;
-                        }
-                        damage(entityName, playerAttack);
-                        damage('player', enemyAttack);
-                    } else {
-                        // Is the enemy a boss?
-                        if (entityName === 'boss') {
-                            notifier.success('A winner is you!');
-                            this._setupGame();
-                            return;
-                        }
-                        gainXp((state.level + 1) * ENEMY.xp);
-                        removeEntity(entityName);
-                    }
+                // east
+                case 39:
+                case 68:
+                    this.props.playerInput([1, 0]);
                     break;
-                case 'health':
-                    heal('player', entity.health);
-                    removeEntity(entityName);
-                    move('player', vector);
+                // south
+                case 40:
+                case 83:
+                    this.props.playerInput([0, 1]);
                     break;
-                case 'exit':
-                    resetBoard();
-                    setMap(this.props.mapAlgo());
-                    setLocation('player', this._getEmptyCoords());
-                    increaseLevel();
-                    this._fillMap();
+                // west
+                case 37:
+                case 65:
+                    this.props.playerInput([-1, 0]);
                     break;
                 default:
-                    break;
+                    return;
             }
         }
-    },
+    };
 
-    render: function render() {
-        var _state = this.state;
-        var map = _state.map;
-        var entities = _state.entities;
-        var occupiedSpaces = _state.occupiedSpaces;
-        var level = _state.level;
-        var player = _state.player;
-        var windowHeight = _state.windowHeight;
-        var windowWidth = _state.windowWidth;
-        var winner = _state.winner;
-        var darkness = _state.darkness;
-        var SIGHT = 7;
-        // This should match the css height and width in pixels
-        var tileSize = document.getElementsByClassName('tile').item(0) ? document.getElementsByClassName('tile').item(0).clientHeight : 10;
+    Game_.prototype.handleResize = function handleResize(e) {
+        var viewportWidth = e.target.innerWidth / this.VP_WIDTH_RATIO;
+        var viewportHeight = Math.max(this.VP_MINIMUM_HEIGHT, e.target.innerHeight / this.VP_HEIGHT_RATIO - this.VP_HEIGHT_OFFSET);
+        this.setState({ viewportWidth: viewportWidth, viewportHeight: viewportHeight });
+    };
 
-        // Get start coords for current viewport
-        var numCols = Math.floor(windowWidth / tileSize - 5),
-            numRows = Math.floor(windowHeight / tileSize - 17);
-        var startX = Math.floor(player.x - numCols / 2);
-        var startY = Math.floor(player.y - numRows / 2);
-        // Make sure start isn't less than 0
-        if (startX < 0) startX = 0;
-        if (startY < 0) startY = 0;
-        // Set end coords
-        var endX = startX + numCols;
-        var endY = startY + numRows;
-        // Final validation of start and end coords
-        if (endX > map.length) {
-            startX = numCols > map.length ? 0 : startX - (endX - map.length);
-            endX = map.length;
-        }
-        if (endY > map[0].length) {
-            startY = numRows > map[0].length ? 0 : startY - (endY - map[0].length);
-            endY = map[0].length;
-        }
+    Game_.prototype.render = function render() {
+        var _this2 = this;
 
-        // Create visible gameboard
-        var rows = [],
-            tileClass = undefined,
-            row = undefined;
-        for (var y = startY; y < endY; y++) {
-            row = [];
-            for (var x = startX; x < endX; x++) {
-                var entity = occupiedSpaces[x + 'x' + y];
-                if (!entity) {
-                    tileClass = reverseLookup[map[x][y]];
-                } else {
-                    tileClass = entities[entity].entityType;
-                }
-                if (darkness) {
-                    // check if it should be dark
-                    var xDiff = player.x - x,
-                        yDiff = player.y - y;
-                    if (Math.abs(xDiff) > SIGHT || Math.abs(yDiff) > SIGHT) {
-                        tileClass += ' dark';
-                    } else if (Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)) >= SIGHT) {
-                        tileClass += ' dark';
-                    }
-                }
-                row.push(React.createElement('span', { className: 'tile ' + tileClass, key: x + 'x' + y }, ' '));
-            }
-            rows.push(React.createElement('div', { className: 'boardRow', key: 'row' + y }, row));
-        }
+        // ensure the viewport height and width is always even
+        var viewportHeight = this.state.viewportHeight - this.state.viewportHeight % 2;
+        var viewportWidth = this.state.viewportWidth - this.state.viewportWidth % 2;
+
+        var entities = this.props.grid.entities;
+        var _props$grid$playerPos = this.props.grid.playerPosition;
+        var playerX = _props$grid$playerPos[0];
+        var playerY = _props$grid$playerPos[1];
+
+        // define the limits of the cells to be displayed in the viewport
+
+        var top = _.clamp(playerY - viewportHeight / 2, 0, entities.length - viewportHeight);
+        var right = Math.max(playerX + viewportWidth / 2, viewportWidth);
+        var bottom = Math.max(playerY + viewportHeight / 2, viewportHeight);
+        var left = _.clamp(playerX - viewportWidth / 2, 0, entities[0].length - viewportWidth);
+
+        // create a new array of entities which includes the distance from the player
+        // used to enable fog mode
+        var newEntities = entities.map(function (row, i) {
+            return row.map(function (cell, j) {
+                cell.distanceFromPlayer = Math.abs(playerY - i) + Math.abs(playerX - j);
+                return cell;
+            });
+        });
+
+        // create cell components from the entities that are in scope of the viewport
+        var cells = newEntities.filter(function (row, i) {
+            return i >= top && i < bottom;
+        }).map(function (row, i) {
+            return React.createElement(
+                'div',
+                { key: i, className: 'row' },
+                row.filter(function (row, i) {
+                    return i >= left && i < right;
+                }).map(function (cell, j) {
+                    return React.createElement(Cell, {
+                        key: j,
+                        cell: cell,
+                        distance: cell.distanceFromPlayer,
+                        zone: _this2.props.grid.dungeonLevel,
+                        visible: _this2.props.fogMode
+                    });
+                })
+            );
+        });
 
         return React.createElement(
             'div',
-            { id: 'game' },
+            { className: 'grid-wrapper' },
+            cells
+        );
+    };
+
+    return Game_;
+}(Component);
+
+var mapStateToGameProps = function mapStateToGameProps(_ref7) {
+    var ui = _ref7.ui;
+    var grid = _ref7.grid;
+    var player = _ref7.player;
+
+    return { fogMode: ui.fogMode, grid: grid, player: player };
+};
+
+var mapDispatchToGameProps = function mapDispatchToGameProps(dispatch) {
+    return {
+        playerInput: function playerInput(vector) {
+            return dispatch(_playerInput(vector));
+        },
+        createLevel: function createLevel() {
+            return dispatch(_createLevel());
+        },
+        setDungeonLevel: function setDungeonLevel(level) {
+            return dispatch(_setDungeonLevel(level));
+        },
+        triggerOpeningMessages: function triggerOpeningMessages() {
+            return dispatch(openingMessages());
+        }
+    };
+};
+
+var Game = connect(mapStateToGameProps, mapDispatchToGameProps)(Game_);
+
+var Tips = function (_Component2) {
+    _inherits(Tips, _Component2);
+
+    function Tips() {
+        _classCallCheck(this, Tips);
+
+        var _this3 = _possibleConstructorReturn(this, _Component2.call(this));
+
+        _this3.state = {
+            tips: ['Use WASD or arrow keys to move', 'Defeat the Boss in Zone 4 to win', 'Toggle Fog Mode with the \'F\' key', 'Restart the game with the \'R\' key', 'Defeat enemies to increase your XP', 'Level up to increase your damage', 'A new weapon might not be as good as your current one ', 'Be sure to gain as much XP as you can in each zone'],
+            displayIdx: 0,
+            intervalId: null
+        };
+        return _this3;
+    }
+
+    Tips.prototype.componentDidMount = function componentDidMount() {
+        var _this4 = this;
+
+        var counter = 1;
+        var intervalId = setInterval(function () {
+            if (counter === _this4.state.tips.length) {
+                counter = 0;
+            }
+            _this4.setState({
+                displayIdx: counter
+            });
+            counter++;
+        }, 10000);
+
+        this.setState({
+            intervalId: intervalId
+        });
+    };
+
+    Tips.prototype.componentWillUnmount = function componentWillUnmount() {
+        clearInterval(this.state.intervalId);
+    };
+
+    Tips.prototype.render = function render() {
+        return React.createElement(
+            'div',
+            { className: 'strip' },
             React.createElement(
-                'ul',
-                { id: 'ui' },
-                React.createElement(
+                'p',
+                null,
+                ' Tip: ',
+                this.state.tips[this.state.displayIdx]
+            )
+        );
+    };
+
+    return Tips;
+}(Component);
+
+var Messages_ = function Messages_(_ref8) {
+    var messages = _ref8.messages;
+
+    return React.createElement(
+        'div',
+        { className: 'panel messages' },
+        React.createElement(
+            'ul',
+            null,
+            messages.slice(-3).map(function (msg, i) {
+                return React.createElement(
                     'li',
-                    { id: 'health' },
-                    React.createElement(
-                        'span',
-                        { className: 'label' },
-                        'Health:'
-                    ),
-                    ' ',
-                    player.health
-                ),
+                    { key: i },
+                    msg
+                );
+            })
+        )
+    );
+};
+
+var mapStateToMessagesProps = function mapStateToMessagesProps(_ref9) {
+    var ui = _ref9.ui;
+
+    return { messages: ui.messages };
+};
+
+var Messages = connect(mapStateToMessagesProps)(Messages_);
+
+var PlayerSettings_ = function (_Component3) {
+    _inherits(PlayerSettings_, _Component3);
+
+    function PlayerSettings_() {
+        _classCallCheck(this, PlayerSettings_);
+
+        var _this5 = _possibleConstructorReturn(this, _Component3.call(this));
+
+        _this5.handleKeyPress = _this5.handleKeyPress.bind(_this5);
+        return _this5;
+    }
+
+    PlayerSettings_.prototype.componentDidMount = function componentDidMount() {
+        window.addEventListener('keydown', this.handleKeyPress);
+    };
+
+    PlayerSettings_.prototype.componentWillUnmount = function componentWillUnmount() {
+        window.removeEventListener('keydown', this.handleKeyPress);
+    };
+
+    PlayerSettings_.prototype.render = function render() {
+        var _props = this.props;
+        var fogMode = _props.fogMode;
+        var restartGame = _props.restartGame;
+        var toggleFogMode = _props.toggleFogMode;
+
+        return React.createElement(
+            'div',
+            { className: 'panel' },
+            React.createElement(
+                'div',
+                { className: 'score-item' },
+                React.createElement('input', {
+                    onChange: toggleFogMode,
+                    id: 'toggle',
+                    type: 'checkbox',
+                    checked: fogMode
+                }),
                 React.createElement(
-                    'li',
-                    { id: 'weapon' },
-                    React.createElement(
-                        'span',
-                        { className: 'label' },
-                        'Weapon:'
-                    ),
-                    ' ',
-                    player.weapon
-                ),
-                React.createElement(
-                    'li',
-                    { id: 'attack' },
-                    React.createElement(
-                        'span',
-                        { className: 'label' },
-                        'Attack:'
-                    ),
-                    ' ',
-                    player.attack
-                ),
-                React.createElement(
-                    'li',
-                    { id: 'playerLevel' },
-                    React.createElement(
-                        'span',
-                        { className: 'label' },
-                        'Level:'
-                    ),
-                    ' ',
-                    player.level
-                ),
-                React.createElement(
-                    'li',
-                    { id: 'xp' },
-                    React.createElement(
-                        'span',
-                        { className: 'label' },
-                        'Next Level:'
-                    ),
-                    ' ',
-                    player.toNextLevel,
-                    ' XP'
-                ),
-                React.createElement(
-                    'li',
-                    { id: 'level' },
-                    React.createElement(
-                        'span',
-                        { className: 'label' },
-                        'Dungeon:'
-                    ),
-                    ' ',
-                    level
+                    'label',
+                    { htmlFor: 'toggle' },
+                    'Toggle fog mode'
                 )
             ),
             React.createElement(
                 'div',
-                { className: 'buttons' },
-                React.createElement(ToggleButton, {
-                    label: 'Toggle Darkness',
-                    id: 'toggleDarkness',
-                    handleClick: this._toggleDarkness })
-            ),
-            React.createElement(
-                'div',
-                { id: 'board' },
-                rows
+                { className: 'score-item' },
+                React.createElement('div', { onClick: restartGame, className: 'restart-btn' }),
+                React.createElement(
+                    'span',
+                    { onClick: restartGame, className: 'setting-label' },
+                    'Restart'
+                )
             )
         );
+    };
+
+    PlayerSettings_.prototype.handleKeyPress = function handleKeyPress(e) {
+        switch (e.keyCode) {
+            // north
+            case 70:
+                this.props.toggleFogMode();
+                break;
+            case 82:
+                this.props.restartGame();
+                break;
+            default:
+                return;
+        }
+    };
+
+    return PlayerSettings_;
+}(Component);
+
+var mapStateToPlayerSettingsProps = function mapStateToPlayerSettingsProps(_ref10) {
+    var ui = _ref10.ui;
+
+    return { fogMode: ui.fogMode };
+};
+
+var mapDispatchToPlayerSettingsProps = function mapDispatchToPlayerSettingsProps(dispatch) {
+    return {
+        toggleFogMode: function toggleFogMode() {
+            return dispatch(_toggleFogMode());
+        },
+        restartGame: function restartGame() {
+            return dispatch(_restartGame());
+        }
+    };
+};
+
+var PlayerSettings = connect(mapStateToPlayerSettingsProps, mapDispatchToPlayerSettingsProps)(PlayerSettings_);
+
+var ScoreBoard = function ScoreBoard(_ref11) {
+    var grid = _ref11.grid;
+    var player = _ref11.player;
+
+    return React.createElement(
+        'div',
+        { className: 'panel scoreboard' },
+        React.createElement(Score, {
+            iconClass: 'potion',
+            title: 'Health',
+            value: player.health
+        }),
+        React.createElement(Score, {
+            iconClass: 'back-' + grid.dungeonLevel,
+            title: 'Zone',
+            value: grid.dungeonLevel
+        }),
+        React.createElement(Score, {
+            iconClass: 'weapon',
+            title: "Weapon",
+            value: player.weapon.name + ' (DMG: ' + player.weapon.damage + ')'
+        }),
+        React.createElement(Score, {
+            iconClass: 'player',
+            title: 'Level',
+            value: Math.floor(player.xp / 100)
+        }),
+        React.createElement(Score, {
+            iconClass: 'triangle',
+            title: 'XP to level up',
+            value: 100 - player.xp % 100
+        })
+    );
+};
+
+var App_ = function App_(props) {
+    return React.createElement(
+        'div',
+        null,
+        React.createElement(Header, { level: props.grid.dungeonLevel }),
+        React.createElement(
+            'div',
+            { id: 'app' },
+            React.createElement(Game, null),
+            React.createElement(
+                'div',
+                { className: 'sidebar' },
+                React.createElement(ScoreBoard, { player: props.player, grid: props.grid }),
+                React.createElement(PlayerSettings, null),
+                React.createElement(Messages, null)
+            )
+        ),
+        React.createElement(Tips, null)
+    );
+};
+
+var mapStateToAppProps = function mapStateToAppProps(_ref12) {
+    var grid = _ref12.grid;
+    var player = _ref12.player;
+
+    return { grid: grid, player: player };
+};
+
+var App = connect(mapStateToAppProps)(App_);
+
+//REDUCERS
+
+var gridInitialState = {
+    entities: [[]],
+    dungeonLevel: 0,
+    playerPosition: []
+};
+
+var grid = function grid() {
+    var state = arguments.length <= 0 || arguments[0] === undefined ? gridInitialState : arguments[0];
+    var _ref13 = arguments[1];
+    var type = _ref13.type;
+    var payload = _ref13.payload;
+
+    switch (type) {
+        case t.CHANGE_ENTITY:
+        {
+            var _y, _update;
+
+            var _payload$coords = payload.coords;
+            var x = _payload$coords[0];
+            var y = _payload$coords[1];
+
+            var entities = update(state.entities, (_update = {}, _update[y] = (_y = {}, _y[x] = { $set: payload.entity }, _y), _update));
+            return _extends({}, state, { entities: entities });
+        }
+        case t.CHANGE_PLAYER_POSITION:
+            return _extends({}, state, { playerPosition: payload });
+        case t.CREATE_LEVEL:
+            return _extends({}, state, {
+                playerPosition: payload.playerPosition,
+                entities: payload.entities
+            });
+        case t.SET_DUNGEON_LEVEL:
+            return _extends({}, state, { dungeonLevel: payload });
+        default:
+            return state;
     }
-});
+};
 
-var ToggleButton = React.createClass({
-    displayName: 'ToggleButton',
-
-    propTypes: {
-        label: React.PropTypes.string.isRequired,
-        id: React.PropTypes.string.isRequired,
-        handleClick: React.PropTypes.func.isRequired
-    },
-    render: function render() {
-        return React.createElement(
-            'button',
-            {
-                className: 'toggleButton',
-                id: this.props.id,
-                onClick: this.props.handleClick },
-            this.props.label
-        );
+var playerInitialState = {
+    health: 100,
+    xp: 100,
+    weapon: {
+        name: 'Taser',
+        damage: 10
     }
-});
+};
 
-// Render React to page
-var targetEl = document.getElementById('root');
+var player = function player() {
+    var state = arguments.length <= 0 || arguments[0] === undefined ? playerInitialState : arguments[0];
+    var _ref14 = arguments[1];
+    var type = _ref14.type;
+    var payload = _ref14.payload;
 
-React.render(React.createElement(RogueLike, { mapAlgo: createMap, getState: store.getState }), targetEl);
-
-// MAP GENERATOR
-// Returns a matrix of the given dimensions with the number of rooms specified
-function createMap() {
-    var width = arguments.length <= 0 || arguments[0] === undefined ? 100 : arguments[0];
-    var height = arguments.length <= 1 || arguments[1] === undefined ? 100 : arguments[1];
-    var maxRoomSize = arguments.length <= 2 || arguments[2] === undefined ? 20 : arguments[2];
-    var minRoomSize = arguments.length <= 3 || arguments[3] === undefined ? 6 : arguments[3];
-    var maxHallLength = arguments.length <= 4 || arguments[4] === undefined ? 5 : arguments[4];
-    var numRooms = arguments.length <= 5 || arguments[5] === undefined ? 20 : arguments[5];
-    var roomChance = arguments.length <= 6 || arguments[6] === undefined ? .75 : arguments[6];
-
-    // init grid of walls
-    var map = _.fill(Array(width), 0);
-    var blankCol = _.fill(Array(height), tileType.WALL);
-    map = map.map(function () {
-        return blankCol.slice();
-    });
-
-    // create first room
-    fillRect(map, { x: 45, y: 45 }, { x: 10, y: 10 }, tileType.FLOOR);
-
-    // create rooms
-    for (var i = 0; i < numRooms; i++) {
-        placeRoom(map);
+    switch (type) {
+        case t.ADD_WEAPON:
+            return _extends({}, state, { weapon: payload });
+        case t.ADD_XP:
+            return _extends({}, state, { xp: state.xp + payload });
+        case t.MODIFY_HEALTH:
+            return _extends({}, state, { health: payload });
+        case t.RESTART:
+            return playerInitialState;
+        default:
+            return state;
     }
+};
 
-    return map;
+var messages = [];
 
-    // map is a grid, startCoord is an object like {x: 13, y: 15}
-    // size is an object like {x: 5, y: 7}, fillVal is an int
-    function fillRect(map, startCoord, size, fillVal) {
-        for (var i = startCoord.x; i < startCoord.x + size.x; i++) {
-            _.fill(map[i], fillVal, startCoord.y, size.y + startCoord.y);
-        }
-        return map;
+var uIInitialState = {
+    fogMode: true,
+    messages: messages
+};
+
+var ui = function ui() {
+    var state = arguments.length <= 0 || arguments[0] === undefined ? uIInitialState : arguments[0];
+    var _ref15 = arguments[1];
+    var type = _ref15.type;
+    var payload = _ref15.payload;
+
+    switch (type) {
+        case t.NEW_MESSAGE:
+            return _extends({}, state, { messages: [].concat(state.messages, [payload]) });
+        case t.TOGGLE_FOG_MODE:
+            return _extends({}, state, { fogMode: !state.fogMode });
+        case t.RESTART:
+            return uIInitialState;
+        default:
+            return state;
     }
+};
 
-    // Will keep trying to place random rooms in random places until it succeeds.
-    function placeRoom(map) {
-        var wall = undefined,
-            width = undefined,
-            height = undefined,
-            isRoom = undefined,
-            startX = undefined,
-            startY = undefined,
-            coords = undefined,
-            numClear = undefined;
-        while (true) {
-            // Create random location and room
-            // TODO - Choose wall or hall
-            numClear = 0;
-            wall = findWall(map);
-            coords = wall.coords;
-            width = Math.floor(Math.random() * (maxRoomSize - minRoomSize) + minRoomSize);
-            height = Math.floor(Math.random() * (maxRoomSize - minRoomSize) + minRoomSize);
-            switch (wall.openDir) {
-                case 'right':
-                    startX = coords.x - width;
-                    startY = coords.y - Math.floor(height / 2) + getDoorOffset(height);
-                    break;
-                case 'left':
-                    startX = coords.x + 1;
-                    startY = coords.y - Math.floor(height / 2) + getDoorOffset(height);
-                    break;
-                case 'top':
-                    startX = coords.x - Math.floor(width / 2) + getDoorOffset(width);
-                    startY = coords.y + 1;
-                    break;
-                case 'bottom':
-                    startX = coords.x - Math.floor(width / 2) + getDoorOffset(width);
-                    startY = coords.y - height;
-                    break;
-                default:
-                    break;
-            }
-            // Exit if room would be outside matrix
-            if (startX < 0 || startY < 0 || startX + width >= map.length || startY + height >= map[0].length) {
-                continue;
-            }
-            // check if all spaces are clear
-            for (var i = startX; i < startX + width; i++) {
-                if (map[i].slice(startY, startY + height).every(function (tile) {
-                        return tile === tileType.WALL;
-                    })) {
-                    numClear++;
-                }
-            }
-            if (numClear === width) {
-                fillRect(map, { x: startX, y: startY }, { x: width, y: height }, tileType.FLOOR);
-                map[coords.x][coords.y] = 1;
-                return map;
-            }
-        }
+//COMBINE REDUCERS
+var reducers = combineReducers({ grid: grid, player: player, ui: ui });
 
-        function getDoorOffset(length) {
-            return Math.floor(Math.random() * length - Math.floor((length - 1) / 2));
-        }
-    }
+//WRAP WITH STORE AND RENDER
 
-    // Loops until it finds a wall tile
-    function findWall(map) {
-        var coords = { x: 0, y: 0 };
-        var wallDir = false;
-        do {
-            coords.x = Math.floor(Math.random() * map.length);
-            coords.y = Math.floor(Math.random() * map[0].length);
-            wallDir = isWall(map, coords);
-        } while (!wallDir);
-
-        return { coords: coords, openDir: wallDir };
-    }
-
-    // Takes a map matrix and a coordinate object
-    // Returns false if not a wall, otherwise the direction of the open tile
-    function isWall(map, coords) {
-        // return false if tile isn't wall
-        if (map[coords.x][coords.y] !== tileType.WALL) {
-            return false;
-        }
-        // left is open
-        if (typeof map[coords.x - 1] !== 'undefined' && map[coords.x - 1][coords.y] === tileType.FLOOR) {
-            return 'left';
-        }
-        // right is open
-        if (typeof map[coords.x + 1] !== 'undefined' && map[coords.x + 1][coords.y] === tileType.FLOOR) {
-            return 'right';
-        }
-        // top is open
-        if (map[coords.x][coords.y - 1] === tileType.FLOOR) {
-            return 'top';
-        }
-        // bottom is open
-        if (map[coords.x][coords.y + 1] === tileType.FLOOR) {
-            return 'bottom';
-        }
-
-        return false;
-    }
-}
+var createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
+ReactDOM.render(React.createElement(
+    Provider,
+    { store: createStoreWithMiddleware(enableBatching(reducers)) },
+    React.createElement(App, null)
+), document.querySelector('.container'));
