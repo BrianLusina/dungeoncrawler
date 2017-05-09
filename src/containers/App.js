@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import '../styles/App.css';
 import Dungeon from '../components/Dungeon';
-import { tileType } from '../constants/gameConstants';
+import { tileType } from '../constants/gameSettings';
 import _ from 'lodash';
 import configureStore from '../store/configureStore';
 import { Provider } from 'react-redux'

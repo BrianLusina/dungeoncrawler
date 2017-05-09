@@ -1,5 +1,5 @@
 import rogueLikeReducer from './rogueReducer';
-import batchReducer from './batchingReducer';
+import batchReducer from './uiReducer';
 import { combineReducers } from 'redux';
 
 const rootReducer = combineReducers({

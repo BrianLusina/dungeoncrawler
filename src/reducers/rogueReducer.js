@@ -1,5 +1,5 @@
 import initialState from './initialState';
-import * as gConstants from '../constants/gameConstants';
+import * as gConstants from '../constants/gameSettings';
 import * as types from '../constants/actionTypes';
 import _ from 'lodash';
 
