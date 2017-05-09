@@ -1,9 +1,13 @@
-import rogueLikeReducer from './rogueReducer';
-import batchReducer from './uiReducer';
+import playerReducer from './playerReducer';
+import uiReducer from './uiReducer';
 import { combineReducers } from 'redux';
 
+/**
+ * The state tree of the application will be reduced using actions that will be dispatched
+ * to the store and return the next state of the application
+ * */
 const rootReducer = combineReducers({
-    rogueLikeReducer, batchReducer
+    playerReducer, uiReducer
 });
 
 export default rootReducer;
