@@ -1,0 +1,14 @@
+machine:
+  node:
+    version: 6.9.4
+
+dependencies:
+  pre:
+    - npm install
+
+test:
+  override:
+    - npm run test
+    - npm run test:coverage
+    - codecov
+
