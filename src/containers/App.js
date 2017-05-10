@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Dungeon from '../components/Dungeon';
+import Dungeon from '../components/cell';
 import { tileType } from '../constants/gameSettings';
 import _ from 'lodash';
 import configureStore from '../store/configureStore';
