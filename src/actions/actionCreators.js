@@ -70,7 +70,7 @@ function setDungeonLevel(payload) {
     };
 }
 
-function toggleFogMode() {
+export function toggleFogMode() {
     return {
         type: types.TOGGLE_FOG_MODE
     };
