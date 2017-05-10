@@ -7,63 +7,62 @@ import createMap from '../utils/createMap';
 import populateEntities from '../utils/entityCreator';
 import { batchActions } from 'redux-batched-actions';
 
-//ACTION-CREATORS
-function addWeapon(payload) {
+export function addWeapon(payload) {
     return {
         type: types.ADD_WEAPON,
         payload: payload
     };
 }
 
-function addXP(payload) {
+export function addXP(payload) {
     return {
         type: types.ADD_XP,
         payload: payload
     };
 }
 
-function changeEntity(entity, coords) {
+export function changeEntity(entity, coords) {
     return {
         type: types.CHANGE_ENTITY,
         payload: { entity: entity, coords: coords }
     };
 }
 
-function changePlayerPosition(payload) {
+export function changePlayerPosition(payload) {
     return {
         type: types.CHANGE_PLAYER_POSITION,
         payload: payload
     };
 }
 
-function createLevel(level) {
+export function createLevel(level) {
     return {
         type: types.CREATE_LEVEL,
         payload: populateEntities(createMap(), level)
     };
 }
 
-function modifyHealth(payload) {
+export function modifyHealth(payload) {
     return {
         type: types.MODIFY_HEALTH,
         payload: payload
     };
 }
 
-function newMessage(payload) {
+export function newMessage(payload) {
     return {
         type: types.NEW_MESSAGE,
         payload: payload
     };
 }
 
-function restart() {
+export function restart() {
     return {
         type: types.RESTART
     };
 }
 
-function setDungeonLevel(payload) {
+export function setDungeonLevel(payload) {
     return {
         type: types.SET_DUNGEON_LEVEL,
         payload: payload
