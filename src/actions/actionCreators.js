@@ -2,16 +2,10 @@
  * Action creators that will be used to dispatch actions to the store
  * */
 import * as types from '../constants/actionTypes';
-
-/**
- * Batch all actions before dispatching them to the store
- * @param{Object} actions actions to dispatch to store
- * @return{object}
- * */
-function batchActions(actions) {
-    return { type: types.BATCH, payload: actions };
-}
-
+import _ from 'lodash';
+import createMap from '../utils/createMap';
+import populateEntities from '../utils/entityCreator';
+import { batchActions } from 'redux-batched-actions';
 
 //ACTION-CREATORS
 function addWeapon(payload) {
@@ -23,140 +17,214 @@ function addWeapon(payload) {
 
 function addXP(payload) {
     return {
-        type: t.ADD_XP,
+        type: types.ADD_XP,
         payload: payload
     };
 }
 
 function changeEntity(entity, coords) {
     return {
-        type: t.CHANGE_ENTITY,
+        type: types.CHANGE_ENTITY,
         payload: { entity: entity, coords: coords }
     };
 }
 
 function changePlayerPosition(payload) {
     return {
-        type: t.CHANGE_PLAYER_POSITION,
+        type: types.CHANGE_PLAYER_POSITION,
         payload: payload
     };
 }
 
-function _createLevel(level) {
+function createLevel(level) {
     return {
-        type: t.CREATE_LEVEL,
+        type: types.CREATE_LEVEL,
         payload: populateEntities(createMap(), level)
     };
 }
 
 function modifyHealth(payload) {
     return {
-        type: t.MODIFY_HEALTH,
+        type: types.MODIFY_HEALTH,
         payload: payload
     };
 }
 
 function newMessage(payload) {
     return {
-        type: t.NEW_MESSAGE,
+        type: types.NEW_MESSAGE,
         payload: payload
     };
 }
 
 function restart() {
     return {
-        type: t.RESTART
+        type: types.RESTART
     };
 }
 
-function _setDungeonLevel(payload) {
+function setDungeonLevel(payload) {
     return {
-        type: t.SET_DUNGEON_LEVEL,
+        type: types.SET_DUNGEON_LEVEL,
         payload: payload
     };
 }
 
-function _toggleFogMode() {
+function toggleFogMode() {
     return {
-        type: t.TOGGLE_FOG_MODE
+        type: types.TOGGLE_FOG_MODE
     };
 }
 
-export const damage = (entity, value) =>({
-   type: types.DAMAGE,
-    entity, value
-});
+// thunk
+export default (vector) => {
+    return (dispatch, getState) => {
+        const { grid, player } = getState();
 
-export const heal = (entity, health) => ({
-    type: types.HEAL,
-    entity, 
-    health
-});
+        // cache some useful variables
+        const [ x, y ] = grid.playerPosition.slice(0); // get current location
+        const [ vectorX, vectorY ] = vector; // get direction modifier
+        const newPosition = [vectorX + x, vectorY + y]; // define where we're moving to
+        const newPlayer = grid.entities[y][x];
+        const destination = grid.entities[y + vectorY][x + vectorX]; // whats in the cell we're heading to
+        // store the actions in array to be past to batchActions
+        const actions = [];
 
-export const move = (entity, vector) => ({
-    type: types.MOVE, 
-    entity, 
-    vector: vector 
-});
+        // move the player unless destination is an enemy or a '0' cell
+        if (destination.type && destination.type !== 'enemy' && destination.type !== 'boss') {
+            actions.push(
+                changeEntity({ type: 'floor' }, [x, y]),
+                changeEntity(newPlayer, newPosition),
+                changePlayerPosition(newPosition)
+            );
+        }
+        switch (destination.type) {
+            case 'boss':
+            case 'enemy': {
+                const playerLevel = Math.floor(player.xp / 100);
+                // player attacks enemy
+                const enemyDamageTaken = Math.floor(player.weapon.damage * _.random(1, 1.3) * playerLevel);
+                destination.health -= enemyDamageTaken;
 
-export const setLocation = (entity, location) => ({
-    type: types.SET_LOCATION, entityName: entity, location: location
-});
+                if (destination.health > 0) {
+                    // enemy attacks player
+                    const playerDamageTaken = Math.floor(_.random(4, 7) * destination.level);
 
-export const switchWeapon = (weaponName, attack) => ({
-    type: types.SWITCH_WEAPON, weapon: weaponName, attack: attack
-});
+                    actions.push(
+                        changeEntity(destination, newPosition),
+                        modifyHealth(player.health - playerDamageTaken),
+                        newMessage(`FIGHT! You hurt the enemy with attack of [${enemyDamageTaken}].	The enemy hits back with an attack of [${playerDamageTaken}].  Enemy has [${destination.health}] health remaining.`)
+                    );
 
-export const addEntity = (entityName, entityType, health, attack, location) => ({
-    type: types.ADD_ENTITY, entityName: entityName, entityType: entityType,
-        health: health, attack: attack, location: location
-});
+                    if (player.health - playerDamageTaken <= 0) {
+                        // player dies
+                        dispatch(modifyHealth(0));
+                        setTimeout(() => dispatch(setDungeonLevel('death')), 250);
+                        setTimeout(() => dispatch(newMessage(`YOU DIED`)),
+                            1000);
+                        setTimeout(() => dispatch(newMessage(`Everything goes dark..`)),
+                            2000);
+                        setTimeout(() => dispatch(newMessage(`You resolve to try harder next time`)),
+                            4000);
+                        setTimeout(() => dispatch(newMessage(`The grid resets itself....`)),
+                            6000);
+                        setTimeout(() => dispatch(batchActions([
+                                restart(), createLevel(1), setDungeonLevel(1)
+                            ])),
+                            8000);
+                        return;
+                    }
+                }
 
-export const removeEntity = (entityName) => ({
-    type: types.REMOVE_ENTITY, entityName: entityName
-});
+                if (destination.health <= 0) {
+                    // the fight is over and the player has won
+                    // add XP and move the player
+                    if (destination.type === 'boss') {
+                        actions.push(
+                            addXP(10),
+                            changeEntity({ type: 'floor'}, [x, y]),
+                            changeEntity(newPlayer, newPosition),
+                            changePlayerPosition(newPosition),
+                            newMessage(`VICTORY! Your attack of [${enemyDamageTaken}] is too powerful for the enemy, who dissolves before your very eyes.`)
+                        );
+                        setTimeout(() => dispatch(setDungeonLevel('victory')), 250);
+                        setTimeout(() => dispatch(newMessage(`YOU DEFATED THE BOSS!`)),
+                            1000);
+                        setTimeout(() => dispatch(newMessage(`The BOSS emits an almighty scream`)),
+                            2000);
+                        setTimeout(() => dispatch(newMessage(`You bask momentarily in your glory`)),
+                            4000);
+                        setTimeout(() => dispatch(newMessage(`The grid resets itself....`)),
+                            6000);
+                        setTimeout(() => dispatch(batchActions([
+                                restart(), createLevel(1), setDungeonLevel(1)
+                            ])),
+                            8000);
+                    } else {
+                        actions.push(
+                            addXP(10),
+                            changeEntity({ type: 'floor'}, [x, y]),
+                            changeEntity(newPlayer, newPosition),
+                            changePlayerPosition(newPosition),
+                            newMessage(`VICTORY! Your attack of [${enemyDamageTaken}] is too powerful for the enemy, who dissolves before your very eyes.`)
+                        );
+                        setTimeout(() => dispatch(newMessage(`You gain 10XP and feel yourself growing stronger..`)),
+                            2500);
+                        if ((player.xp + 10) % 100 === 0) {
+                            setTimeout(() => dispatch(newMessage(`LEVEL UP!`)), 5000);
+                        }
+                    }
+                }
+                break;
+            }
+            case 'exit':
+                setTimeout(() => dispatch(batchActions([
+                    setDungeonLevel(grid.dungeonLevel + 1),
+                    createLevel(grid.dungeonLevel + 1)
+                ])), 3000);
+                actions.push(
+                    newMessage(`The cells start to shift... you transit to zone ${grid.dungeonLevel + 1}`)
+                );
+                setTimeout(() => dispatch(setDungeonLevel(`transit-${grid.dungeonLevel + 1}`)), 250);
+                break;
+            case 'potion':
+                actions.push(
+                    modifyHealth(player.health + 30),
+                    newMessage(`You drink a potion for [30] health`)
+                );
+                break;
+            case 'weapon':
+                actions.push(
+                    addWeapon(destination),
+                    newMessage(`You pick up a ${destination.name}`)
+                );
+                break;
+            default:
+                break;
+        }
 
-export const resetBoard = () => ({
-    type: types.RESET_BOARD
-});
+        dispatch(batchActions(actions));
+    };
+};
 
-export const setMap = (map) => ({
-    type: types.SET_MAP, map: map
-});
+export function openingMessages() {
+    return (dispatch) => {
+        dispatch(newMessage(`Welcome to The Grid...`));
+        setTimeout(() => {
+            dispatch(newMessage(`You find yourself in a world filled with strange cells`));
+        }, 3000);
+        setTimeout(() => {
+            dispatch(newMessage(`'Hmm... there must be a way out of here..'`));
+        }, 6000);
+    };
+}
 
-export const increaseLevel = () => ({
-    type: types.INCREASE_LEVEL
-});
-
-export const resetLevel = () => ({
-    type: types.RESET_LEVEL
-});
-
-export const setWindowSize = () => ({
-    type: types.SET_WINDOW_SIZE,
-        windowWidth: window.innerWidth,
-        windowHeight: window.innerHeight
-});
-
-export const gainXp = (xp) => ({
-    type: types.GAIN_XP, xp: xp
-});
-
-export const levelUp = (attack, health, xp) => ({
-    type: types.LEVEL_UP, attack: attack,
-        health: health,
-        toNextLevel: xp
-});
-
-
-export const resetMap = (gameMap) => ({
-    type: types.RESET_MAP, gameMap
-});
-
-export const addBoss = (attack, health, coords) => ({
-    type: types.ADD_BOSS, attack: attack, health: health, location: coords
-});
-
-export const toggleDarkness = () => ({
-    type: types.TOGGLE_DARKNESS
-});
+export function restartGame() {
+    return (dispatch) => {
+        dispatch(newMessage(`The grid resets itself....`));
+        setTimeout(() => dispatch(batchActions([
+                restart(), createLevel(1), setDungeonLevel(1)
+            ])),
+            1000);
+    };
+}
