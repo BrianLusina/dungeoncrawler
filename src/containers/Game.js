@@ -18,6 +18,9 @@ class Grid extends Component{
             viewportHeight:0
         };
 
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handleResize = this.handleResize.bind(this);
+
         this.VP_HEIGHT_OFFSET = 5; // in ems to match elements above this component
         this.VP_MINIMUM_HEIGHT = 22; // in ems
         // set ratios for determining the viewport size
@@ -67,6 +70,63 @@ class Grid extends Component{
         window.addEventListener("keydown", _.throttle(this.handleKeyPress, 100));
         window.addEventListener("resize", _.throttle(this.handleResize, 500));
         this.props.triggerOpeningMessages();
+    }
+
+    /**
+     * Component will go away now
+     * this is the best place to remove the event listeners we set above
+     */
+    componentWillUnmount(){
+        window.removeEventListener("keydown", _.throttle(this.handleKeyPress, 100));
+        window.removeEventListener("resize", _.throttle(this.handleResize, 500));
+    }
+
+    /**
+     * Handles key presses on the application
+     * @param{object} e, event object
+     * */
+    handleKeyPress(e){
+        e.preventDefault();
+        if(typeof (this.props.grid.dungeonLevel) ===  "number"){
+            switch (e.keyCode){
+                // north
+                case 38:
+                case 87:
+                    this.props.playerInput([0, -1]);
+                    break;
+                // east
+                case 39:
+                case 68:
+                    this.props.playerInput([1, 0]);
+                    break;
+                // south
+                case 40:
+                case 83:
+                    this.props.playerInput([0, 1]);
+                    break;
+                // west
+                case 37:
+                case 65:
+                    this.props.playerInput([-1, 0]);
+                    break;
+                default:
+                    return;
+            }
+        }
+    }
+
+    /**
+     * Handles resizing of the game grid
+     * @param{object} e, event object from calling this method
+     * */
+    handleResize(e){
+        e.preventDefault();
+        const viewportWidth = e.target.innerWidth / this.VP_WIDTH_RATIO;
+        const viewportHeight = Math.max(
+            this.VP_MINIMUM_HEIGHT,
+            (e.target.innerHeight / this.VP_HEIGHT_RATIO) - this.VP_HEIGHT_OFFSET
+        );
+        this.setState({ viewportWidth, viewportHeight });
     }
 
 }
