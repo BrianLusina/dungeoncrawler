@@ -8,7 +8,7 @@ import expect from 'expect';
 import gridReducer from '../src/reducers/gridReducer';
 
 
-describe("Grid Reducer tests", function(){
+describe("Game Reducer tests", function(){
     const initialState = {
         entities:[[]],
         dungeonLevel:0,

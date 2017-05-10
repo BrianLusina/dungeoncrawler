@@ -17,7 +17,7 @@ const setup = () =>{
     return { Wrapper, Grid };
 };
 
-describe("Grid container should", function () {
+describe("Game container should", function () {
 
     it("render without crash", () =>{
         const { Wrapper } = setup();

@@ -9,8 +9,8 @@ import playerInput, { createLevel, openingMessages, setDungeonLevel } from '../a
 import Cell from '../components/cell';
 
 /**
- * Grid container*/
-class Grid extends Component{
+ * Game container*/
+class Game extends Component{
     constructor(){
         super();
         this.state ={
@@ -203,4 +203,4 @@ const mapDispatchToProps = (dispatch) =>{
 /**
  * Connect to store and return a function that takes this container as an argument
  * */
-export default connect(mapStateToProps, mapDispatchToProps)(Grid);
+export default connect(mapStateToProps, mapDispatchToProps)(Game);
