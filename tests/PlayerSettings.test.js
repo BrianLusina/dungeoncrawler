@@ -10,11 +10,13 @@ import { render } from 'react-dom';
 
 const setup = () =>{
     const props = {
-        fogMode: true
+        fogMode: true,
+        restartGame: expect.createSpy(),
+        toggleFogMode: expect.createSpy()
     };
 
     const Wrapper = <PlayerSettings {...props}/>;
-    return {Wrapper, props}
+    return { Wrapper, props }
 };
 
 describe("PlayerSettings container should", function () {
