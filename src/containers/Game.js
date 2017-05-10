@@ -52,11 +52,58 @@ class Grid extends Component{
 
     /***
      * Component will render!
+     * magically render to the DOM
      */
     render(){
-        return(
+        // ensure the viewport height and width is always even
+        const viewportHeight = this.state.viewportHeight - this.state.viewportHeight % 2;
+        const viewportWidth = this.state.viewportWidth - this.state.viewportWidth % 2;
 
-        )
+        const { entities } = this.props.grid;
+        const [ playerX, playerY ] = this.props.grid.playerPosition;
+
+        // define the limits of the cells to be displayed in the viewport
+        const top = _.clamp(playerY - viewportHeight / 2, 0, entities.length - viewportHeight);
+        const right = Math.max(playerX + viewportWidth / 2, viewportWidth);
+        const bottom = Math.max(playerY + viewportHeight / 2, viewportHeight);
+        const left = _.clamp(playerX - viewportWidth / 2, 0, entities[0].length - viewportWidth);
+
+        // create a new array of entities which includes the distance from the player
+        // used to enable fog mode
+        const newEntities = entities.map((row, i) => row.map((cell, j) => {
+            cell.distanceFromPlayer = (Math.abs(playerY - i)) + (Math.abs(playerX - j));
+            return cell;
+        }));
+
+        // create cell components from the entities that are in scope of the viewport
+        const cells = newEntities.filter((row, i) => i >= top && i < bottom)
+            .map((row, i) => {
+                return (
+                    <div key={i} className="row">
+                        {
+                            row
+                                .filter((row, i) => i >= left && i < right)
+                                .map((cell, j) => {
+                                    return (
+                                        <Cell
+                                            key={j}
+                                            cell={cell}
+                                            distance={cell.distanceFromPlayer}
+                                            zone={this.props.grid.dungeonLevel}
+                                            visible={this.props.fogMode}
+                                        />
+                                    );
+                                })
+                        }
+                    </div>
+                );
+            });
+
+        return (
+            <div className="grid-wrapper">
+                {cells}
+            </div>
+        );
     }
 
     /**
