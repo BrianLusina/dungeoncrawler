@@ -3,21 +3,42 @@
  * @notes: PlayerSettings test cases
  */
 import expect from 'expect';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import PlayerSettings from '../src/containers/PlayerSettings';
 import React from 'react';
 import { render } from 'react-dom';
 
-describe("PlayerSettings container should", function () {
-    var wrapper;
+const setup = () =>{
+    const props = {
+        fogMode: true
+    };
 
-    beforeEach(()=>{
-        wrapper = <PlayerSettings/>
-    });
+    const Wrapper = <PlayerSettings {...props}/>;
+    return {Wrapper, props}
+};
+
+describe("PlayerSettings container should", function () {
 
     it("render without crashing", function () {
+        const { Wrapper } = setup();
+
         const div = document.createElement("div");
-        render(<wrapper />, div);
+        render(<Wrapper />, div);
     });
 
+    it("should call dispatch on toggleFogMode", function () {
+       const { Wrapper, props } = setup();
+
+       const input = Wrapper.find("input");
+       input.props.toggleFogMode(true);
+       expect(props.dispatch.calls.length).toBe(1);
+    });
+
+    it("should call dispatch on restart game", ()=>{
+        const { Wrapper, props } = setup();
+
+        const restartBtn = Wrapper.find("div.restart-btn");
+        restartBtn.props.restartGame();
+        expect(props.dispatch.calls.length).toBe(1);
+    });
 });
