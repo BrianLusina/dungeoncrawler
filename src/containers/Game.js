@@ -24,6 +24,51 @@ class Grid extends Component{
         this.VP_WIDTH_RATIO = 30;
         this.VP_HEIGHT_RATIO = 21;
     }
+
+    /**
+     * Called right before render, this will be called once, so, make it count!
+     * Set the initial settings from the application, window height, width
+     * set and create the level the player will start in.
+     * */
+    componentWillMount(){
+        // set the initial viewport size
+        const viewportWidth = window.innerWidth / this.VP_WIDTH_RATIO;
+        const viewportHeight = Math.max(this.VP_MINIMUM_HEIGHT,
+            (window.innerHeight / this.VP_HEIGHT_RATIO) - this.VP_HEIGHT_OFFSET
+        );
+
+        // update the states
+        this.setState({
+            viewportHeight, viewportWidth
+        });
+
+        // create the level and set the level to 1
+        this.props.createLevel();
+        this.props.setDungeonLevel(1);
+    }
+
+    /***
+     * Component will render!
+     */
+    render(){
+        return(
+
+        )
+    }
+
+    /**
+     * Component did mount, we add event listeners to the window and trigger opening cred...err..
+     * messages :D
+     * Will add event listeners and a function. These will be invoked once every set period of time
+     * The keydown event will be set once 0.1 seconds ad resizing will be set once in .5 seconds
+     * This is similar to setTimeout
+     * */
+    componentDidMount(){
+        window.addEventListener("keydown", _.throttle(this.handleKeyPress, 100));
+        window.addEventListener("resize", _.throttle(this.handleResize, 500));
+        this.props.triggerOpeningMessages();
+    }
+
 }
 
 /**
