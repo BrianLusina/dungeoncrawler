@@ -1,5 +1,14 @@
-import initialState from './initialState';
+// import initialState from './initialState';
 import * as types from '../constants/actionTypes';
+
+const initialState = {
+    health: 100,
+    xp: 100,
+    weapon: {
+        name: 'Taser',
+        damage: 10
+    }
+};
 
 /**
  * Pure reducer function that will handle the changes in the state of the application
@@ -9,7 +18,7 @@ import * as types from '../constants/actionTypes';
  * @param{object} payload
  * @return{object} next state of the application
  * */
-export default (state = initialState.player, {type, payload}) => {
+export default (state = initialState, {type, payload}) => {
     switch (type){
         case types.ADD_WEAPON:
             return {...state, weapon: payload};

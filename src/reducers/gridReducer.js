@@ -4,8 +4,14 @@
  */
 
 import * as types from '../constants/actionTypes';
-import initialState from './initialState';
+// import initialState from './initialState';
 import update from 'immutability-helper';
+
+const initialState = {
+    entities: [[]],
+    dungeonLevel: 0,
+    playerPosition: []
+};
 
 /**
  * Reducer for the grid
@@ -15,7 +21,7 @@ import update from 'immutability-helper';
  * the application state
  * @return{object} next state of the grid in the application
  * */
-export default (state = initialState.grid, {type, payload}) => {
+export default (state = initialState, {type, payload}) => {
     switch (type){
         case types.CHANGE_ENTITY:
             const [x, y] = payload.coords;

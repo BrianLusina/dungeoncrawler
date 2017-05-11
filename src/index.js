@@ -10,7 +10,6 @@ const store = configureStore();
 
 // Entry point of the application. This will render the application to the DOM.
 //    <Provider store={createStoreWithMiddleware(enableBatching(reducers))}>
-console.log(store);
 
 render(
     <Provider store={store}>

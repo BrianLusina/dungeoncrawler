@@ -24,6 +24,11 @@ const App = ({grid, player}) => {
     );
 };
 
+// App.propTypes = {
+//     grid: PropTypes.object,
+//     player: PropTypes.object
+// };
+
 const mapStateToProps = ({ grid, player }) => {
     return { grid, player };
 };
