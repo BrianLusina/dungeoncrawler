@@ -22,7 +22,7 @@ export default (state=initialState, {type, payload})=>{
             return {...state, fogMode: !state.fogMode};
 
         case types.RESTART:
-            return initialState.ui;
+            return initialState;
 
         default:
             return state

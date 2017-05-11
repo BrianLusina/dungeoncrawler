@@ -87,8 +87,8 @@ const mapStateToProps = ({ ui }) =>{
 
 const mapDispatchToProps = (dispatch) =>{
     return {
-        toggleFogMode: dispatch(toggleFogMode()),
-        restartGame: dispatch(restartGame())
+        toggleFogMode: () => dispatch(toggleFogMode()),
+        restartGame: () => dispatch(restartGame())
     }
 };
 

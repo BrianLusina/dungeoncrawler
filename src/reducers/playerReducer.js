@@ -30,7 +30,7 @@ export default (state = initialState, {type, payload}) => {
             return {...state, health: payload};
 
         case types.RESTART:
-            return initialState.player;
+            return initialState;
 
         default:
             return state;

@@ -1,6 +1,6 @@
-import playerReducer from './playerReducer';
-import uiReducer from './uiReducer';
-import gridReducer from './gridReducer';
+import player from './playerReducer';
+import ui from './uiReducer';
+import grid from './gridReducer';
 import { combineReducers } from 'redux';
 
 /**
@@ -8,7 +8,7 @@ import { combineReducers } from 'redux';
  * to the store and return the next state of the application
  * */
 const rootReducer = combineReducers({
-    playerReducer, uiReducer, gridReducer
+    player, ui, grid
 });
 
 export default rootReducer;

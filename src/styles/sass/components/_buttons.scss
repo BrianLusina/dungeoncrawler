@@ -1,0 +1,13 @@
+.restart-btn {
+  height: 1em;
+  width: 1em;
+  margin-right: 0.5em;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+}
+.restart-btn:hover {
+  cursor: pointer;
+}
+.restart-btn:active {
+  background: red;
+}
