@@ -1,0 +1,13 @@
+.strip {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding: 0.8em 1.2em;
+  font-size: 1.1em;
+  background: rgba(0, 0, 0, 0.2);
+}

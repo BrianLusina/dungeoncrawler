@@ -1,0 +1,13 @@
+
+.grid-wrapper {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}

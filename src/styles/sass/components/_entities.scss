@@ -1,0 +1,122 @@
+.floor {
+  background: #d6d1d1;
+  border: 1px solid #dbd6d6;
+}
+
+.player {
+  background: #fc8d8d;
+  border: 1px solid #fa3939;
+}
+
+.enemy {
+  background: #8ce114;
+  border: 1px solid #5a910d;
+}
+
+.potion {
+  background: #ff0000;
+  border: 1px solid #a80000;
+}
+
+.weapon {
+  background: #f3f70c;
+  border: 1px solid #a4a705;
+}
+
+.exit {
+  background: #00b9f1;
+  border: 1px solid #00769a;
+}
+
+.boss {
+  background: #c447e0;
+  border: 1px solid #971eb2;
+}
+
+.icon {
+  margin-right: 0.5em;
+  border: 0;
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-left: 0.5em solid transparent;
+  border-right: 0.5em solid transparent;
+  border-bottom: 1em solid red;
+}
+
+.cell {
+  height: 1em;
+  width: 1em;
+  border: 1px solid #2D2D2D;
+}
+
+.back-1 {
+  background: #78d376;
+}
+
+.back-2 {
+  background: #75b3d1;
+}
+
+.back-3 {
+  background: #abaf33;
+}
+
+.back-4 {
+  background: #a733af;
+}
+
+.back-transit-2 {
+  background: #75b3d1;
+  -webkit-transition: background-color 3s;
+  transition: background-color 3s;
+}
+
+.back-transit-3 {
+  background: #abaf33;
+  -webkit-transition: background-color 3s;
+  transition: background-color 3s;
+}
+
+.back-transit-4 {
+  background: #a733af;
+  -webkit-transition: background-color 3s;
+  transition: background-color 3s;
+}
+
+.back-death {
+  background: #000;
+  -webkit-transition: background-color 6s;
+  transition: background-color 6s;
+}
+
+.back-victory {
+  background: #fff;
+  -webkit-transition: background-color 6s;
+  transition: background-color 6s;
+}
+
+input {
+  position: absolute;
+  left: -9999px;
+}
+
+label {
+  cursor: pointer;
+}
+
+label::before {
+  display: inline-block;
+  content: "";
+  height: 1em;
+  width: 1em;
+  border: 1px solid #ddd;
+  margin-right: 0.5em;
+  vertical-align: bottom;
+}
+
+input:checked + label::before {
+  background: red;
+}
