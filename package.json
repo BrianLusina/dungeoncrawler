@@ -13,7 +13,7 @@
     "prop-types": "^15.5.9",
     "react-addons-test-utils": "^15.5.1",
     "react-redux": "^5.0.4",
-    "react-scripts": "0.9.3",
+    "react-scripts": "3.0.0",
     "react-test-renderer": "^15.5.4",
     "react-test-utils": "^0.0.1",
     "redux": "^3.6.0",
@@ -23,13 +23,17 @@
   },
   "dependencies": {
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "snyk": "^1.306.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "test:coverage": "npm test -- --coverage",
-    "eject": "react-scripts eject"
-  }
+    "eject": "react-scripts eject",
+    "snyk-protect": "snyk protect",
+    "prepare": "yarn run snyk-protect"
+  },
+  "snyk": true
 }
