@@ -8792,6 +8792,96 @@ patch:
         patched: '2020-06-07T14:59:09.686Z'
     - react-scripts > webpack > watchpack > watchpack-chokidar2 > chokidar > readdirp > micromatch > extglob > expand-brackets > snapdragon > debug:
         patched: '2020-06-07T14:59:09.686Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/fake-timers > jest-message-util > micromatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > micromatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/fake-timers > jest-message-util > micromatch > braces > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > micromatch > braces > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/fake-timers > jest-message-util > micromatch > extglob > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > micromatch > extglob > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/fake-timers > jest-message-util > micromatch > nanomatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > micromatch > nanomatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/fake-timers > jest-message-util > micromatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > micromatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/fake-timers > jest-message-util > micromatch > braces > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > micromatch > braces > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/fake-timers > jest-message-util > micromatch > extglob > expand-brackets > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > micromatch > extglob > expand-brackets > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/fake-timers > jest-message-util > micromatch > extglob > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > micromatch > extglob > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/fake-timers > jest-message-util > micromatch > nanomatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > micromatch > nanomatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > anymatch > micromatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > micromatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > anymatch > micromatch > braces > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > micromatch > braces > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/fake-timers > jest-message-util > micromatch > extglob > expand-brackets > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > micromatch > extglob > expand-brackets > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > anymatch > micromatch > extglob > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > micromatch > extglob > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > anymatch > micromatch > nanomatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > micromatch > nanomatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > anymatch > micromatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-util > @jest/fake-timers > jest-message-util > micromatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > anymatch > micromatch > braces > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-util > @jest/fake-timers > jest-message-util > micromatch > braces > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > anymatch > micromatch > extglob > expand-brackets > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > micromatch > extglob > expand-brackets > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > anymatch > micromatch > extglob > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-util > @jest/fake-timers > jest-message-util > micromatch > extglob > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > anymatch > micromatch > nanomatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-util > @jest/fake-timers > jest-message-util > micromatch > nanomatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > jest-util > @jest/fake-timers > jest-message-util > micromatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > jest-util > @jest/fake-timers > jest-message-util > micromatch > braces > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > anymatch > micromatch > extglob > expand-brackets > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-util > @jest/fake-timers > jest-message-util > micromatch > extglob > expand-brackets > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > jest-util > @jest/fake-timers > jest-message-util > micromatch > extglob > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > jest-util > @jest/fake-timers > jest-message-util > micromatch > nanomatch > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > jest-util > @jest/fake-timers > jest-message-util > micromatch > extglob > expand-brackets > snapdragon > debug:
+        patched: '2020-06-09T05:42:56.980Z'
   'npm:hoek:20180212':
     - react-scripts > fsevents > node-pre-gyp > request > hawk > hoek:
         patched: '2020-04-21T00:33:34.081Z'
@@ -17631,6 +17721,96 @@ patch:
         patched: '2020-06-07T14:59:09.686Z'
     - react-scripts > webpack > watchpack > watchpack-chokidar2 > chokidar > readdirp > micromatch > extglob > expand-brackets > snapdragon > debug > ms:
         patched: '2020-06-07T14:59:09.686Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/fake-timers > jest-message-util > micromatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > micromatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/fake-timers > jest-message-util > micromatch > braces > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > micromatch > braces > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/fake-timers > jest-message-util > micromatch > extglob > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > micromatch > extglob > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/fake-timers > jest-message-util > micromatch > nanomatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > micromatch > nanomatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/fake-timers > jest-message-util > micromatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > micromatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/fake-timers > jest-message-util > micromatch > braces > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > micromatch > braces > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/fake-timers > jest-message-util > micromatch > extglob > expand-brackets > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > micromatch > extglob > expand-brackets > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/fake-timers > jest-message-util > micromatch > extglob > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > micromatch > extglob > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/fake-timers > jest-message-util > micromatch > nanomatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > micromatch > nanomatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > anymatch > micromatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > micromatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > anymatch > micromatch > braces > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > micromatch > braces > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/fake-timers > jest-message-util > micromatch > extglob > expand-brackets > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > micromatch > extglob > expand-brackets > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > anymatch > micromatch > extglob > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > micromatch > extglob > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > anymatch > micromatch > nanomatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > micromatch > nanomatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > anymatch > micromatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-util > @jest/fake-timers > jest-message-util > micromatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > anymatch > micromatch > braces > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-util > @jest/fake-timers > jest-message-util > micromatch > braces > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > anymatch > micromatch > extglob > expand-brackets > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > micromatch > extglob > expand-brackets > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > anymatch > micromatch > extglob > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-util > @jest/fake-timers > jest-message-util > micromatch > extglob > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > anymatch > micromatch > nanomatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-util > @jest/fake-timers > jest-message-util > micromatch > nanomatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > jest-util > @jest/fake-timers > jest-message-util > micromatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > jest-util > @jest/fake-timers > jest-message-util > micromatch > braces > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > sane > anymatch > micromatch > extglob > expand-brackets > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-util > @jest/fake-timers > jest-message-util > micromatch > extglob > expand-brackets > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > jest-util > @jest/fake-timers > jest-message-util > micromatch > extglob > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > jest-util > @jest/fake-timers > jest-message-util > micromatch > nanomatch > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > jest-haste-map > jest-util > @jest/fake-timers > jest-message-util > micromatch > extglob > expand-brackets > snapdragon > debug > ms:
+        patched: '2020-06-09T05:42:56.980Z'
   'npm:tough-cookie:20170905':
     - react-scripts > fsevents > node-pre-gyp > request > tough-cookie:
         patched: '2020-04-21T00:33:34.081Z'
@@ -19349,3 +19529,25 @@ patch:
         patched: '2020-06-07T14:59:09.686Z'
     - react-scripts > jest > jest-cli > @jest/core > jest-runner > jest-jasmine2 > jest-runtime > jest-config > jest-environment-jsdom > jsdom > request-promise-native > request-promise-core > lodash:
         patched: '2020-06-07T14:59:09.686Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > @babel/core > lodash:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > @babel/core > @babel/helper-module-transforms > lodash:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > @babel/core > @babel/helpers > @babel/traverse > lodash:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > babel-plugin-istanbul > istanbul-lib-instrument > @babel/traverse > lodash:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > lodash:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > babel-plugin-istanbul > istanbul-lib-instrument > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > babel-plugin-istanbul > istanbul-lib-instrument > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > babel-plugin-istanbul > istanbul-lib-instrument > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-06-09T05:42:56.980Z'
+    - react-scripts > jest-environment-jsdom-fourteen > @jest/environment > @jest/transform > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-06-09T05:42:56.980Z'
