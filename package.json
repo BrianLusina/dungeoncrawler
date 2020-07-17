@@ -9,7 +9,7 @@
     "hammerjs": "^2.0.8",
     "humane-js": "^3.2.2",
     "immutability-helper": "^2.9.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "prop-types": "^15.5.9",
     "react-addons-test-utils": "^15.6.2",
     "react-redux": "^5.0.4",
