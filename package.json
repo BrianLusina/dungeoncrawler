@@ -24,7 +24,7 @@
   "dependencies": {
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
-    "snyk": "^1.381.2"
+    "snyk": "^1.401.0"
   },
   "scripts": {
     "start": "react-scripts start",
