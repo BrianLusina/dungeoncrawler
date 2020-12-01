@@ -22,7 +22,7 @@
     "redux-thunk": "^2.2.0"
   },
   "dependencies": {
-    "snyk": "^1.427.0",
+    "snyk": "^1.431.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },
