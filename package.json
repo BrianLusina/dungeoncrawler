@@ -19,7 +19,7 @@
     "redux": "^3.7.2",
     "redux-batched-actions": "^0.5.0",
     "redux-devtools-extension": "^2.13.9",
-    "redux-thunk": "^2.4.0"
+    "redux-thunk": "^2.4.1"
   },
   "dependencies": {
     "snyk": "^1.767.0",
