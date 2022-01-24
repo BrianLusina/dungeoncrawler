@@ -10,7 +10,7 @@
     "humane-js": "^3.2.2",
     "immutability-helper": "^2.9.1",
     "lodash": "^4.17.21",
-    "prop-types": "^15.6.2",
+    "prop-types": "^15.8.1",
     "react-addons-test-utils": "^15.6.2",
     "react-redux": "^7.2.6",
     "react-scripts": "5.0.0",
